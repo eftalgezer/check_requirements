@@ -1,0 +1,63 @@
+pipdeptree==2.9.6; python_version==3.7 and sys_platform==linux
+pip==23.2.1; python_version==3.7 and sys_platform==linux
+setuptools==68.0.0; python_version==3.7 and sys_platform==linux
+pipdeptree==2.12.0; python_version==3.8 and sys_platform==linux
+pip==23.2.1; python_version==3.8 and sys_platform==linux
+setuptools==68.0.0; python_version==3.8 and sys_platform==linux
+pipdeptree==2.12.0; python_version==3.9 and sys_platform==linux
+pip==23.2.1; python_version==3.9 and sys_platform==linux
+setuptools==68.0.0; python_version==3.9 and sys_platform==linux
+pipdeptree==2.12.0; python_version==3.10 and sys_platform==linux
+pip==23.2.1; python_version==3.10 and sys_platform==linux
+setuptools==68.0.0; python_version==3.10 and sys_platform==linux
+pipdeptree==2.12.0; python_version==3.11 and sys_platform==linux
+pip==23.1.2; python_version==3.11 and sys_platform==linux
+setuptools==68.0.0; python_version==3.11 and sys_platform==linux
+pipdeptree==2.12.0; python_version==3.12 and sys_platform==linux
+pip==23.2.1; python_version==3.12 and sys_platform==linux
+setuptools==68.0.0; python_version==3.12 and sys_platform==linux
+pipdeptree==2.9.6; python_version==3.7 and sys_platform==darwin
+pip==23.2.1; python_version==3.7 and sys_platform==darwin
+setuptools==68.0.0; python_version==3.7 and sys_platform==darwin
+pipdeptree==2.12.0; python_version==3.8 and sys_platform==darwin
+pip==23.2.1; python_version==3.8 and sys_platform==darwin
+setuptools==68.0.0; python_version==3.8 and sys_platform==darwin
+pipdeptree==2.12.0; python_version==3.9 and sys_platform==darwin
+pip==23.2.1; python_version==3.9 and sys_platform==darwin
+setuptools==68.0.0; python_version==3.9 and sys_platform==darwin
+pipdeptree==2.12.0; python_version==3.10 and sys_platform==darwin
+pip==23.2.1; python_version==3.10 and sys_platform==darwin
+setuptools==68.0.0; python_version==3.10 and sys_platform==darwin
+certifi==2023.5.7; python_version==3.11 and sys_platform==darwin
+pipdeptree==2.12.0; python_version==3.11 and sys_platform==darwin
+pip==23.2.1; python_version==3.11 and sys_platform==darwin
+setuptools==68.0.0; python_version==3.11 and sys_platform==darwin
+certifi==2023.7.22; python_version==3.12 and sys_platform==darwin
+pipdeptree==2.12.0; python_version==3.12 and sys_platform==darwin
+pip==23.2.1; python_version==3.12 and sys_platform==darwin
+setuptools==68.0.0; python_version==3.12 and sys_platform==darwin
+pipdeptree==2.9.6\r; python_version==3.7 and sys_platform==win32
+pip==23.2.1\r; python_version==3.7 and sys_platform==win32
+setuptools==68.0.0\r; python_version==3.7 and sys_platform==win32
+pipdeptree==2.12.0\r; python_version==3.8 and sys_platform==win32
+pip==23.2.1\r; python_version==3.8 and sys_platform==win32
+setuptools==68.0.0\r; python_version==3.8 and sys_platform==win32
+pipdeptree==2.12.0\r; python_version==3.9 and sys_platform==win32
+pip==23.2.1\r; python_version==3.9 and sys_platform==win32
+pipx==1.2.0\r; python_version==3.9 and sys_platform==win32
+  argcomplete==3.1.1\r; python_version==3.9 and sys_platform==win32
+  colorama==0.4.6\r; python_version==3.9 and sys_platform==win32
+  packaging==23.1\r; python_version==3.9 and sys_platform==win32
+  userpath==1.9.0\r; python_version==3.9 and sys_platform==win32
+    click==8.1.6\r; python_version==3.9 and sys_platform==win32
+      colorama==0.4.6\r; python_version==3.9 and sys_platform==win32
+setuptools==68.0.0\r; python_version==3.9 and sys_platform==win32
+  pipdeptree==2.12.0\r; python_version==3.10 and sys_platform==win32
+pip==23.2.1\r; python_version==3.10 and sys_platform==win32
+setuptools==68.0.0\r; python_version==3.10 and sys_platform==win32
+  pipdeptree==2.12.0\r; python_version==3.11 and sys_platform==win32
+pip==23.2.1\r; python_version==3.11 and sys_platform==win32
+setuptools==68.0.0\r; python_version==3.11 and sys_platform==win32
+pipdeptree==2.12.0\r; python_version==3.12 and sys_platform==win32
+pip==23.2.1\r; python_version==3.12 and sys_platform==win32
+setuptools==68.0.0\r; python_version==3.12 and sys_platform==win32
