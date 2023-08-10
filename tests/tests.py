@@ -395,6 +395,8 @@ def test_main__check_missing():
     Test checking for missing dependencies using the main script.
     """
     with _pkg("SIESTAstepper") as pkg:
+        while not pkg.installed:
+            pass
         assert pkg.package in main_tester("check_requirements -cm requirements.txt")
 
 
