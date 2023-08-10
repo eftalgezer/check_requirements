@@ -403,7 +403,7 @@ def test_main__check_missing_ignore():
     Test checking for missing dependencies using the main script while ignoring specified packages.
     """
     with _pkg("SIESTAstepper==2.1.0") as pkg_to_ignore:
-        with _pkg("ANIAnimator==0.2.2") as pkg_to_miss:
+        with _pkg("fstring_to_format==0.1.2") as pkg_to_miss:
             with _pkg_file([pkg_to_ignore.package]) as ignored:
                 output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name}")
                 assert pkg_to_ignore.package not in output
@@ -415,7 +415,7 @@ def test_main__check_missing_ignore_packages():
     Test checking for missing dependencies using the main script while ignoring specified packages.
     """
     with _pkg("SIESTAstepper==2.1.0") as pkg_to_ignore:
-        with _pkg("ANIAnimator==0.2.2") as pkg_to_miss:
+        with _pkg("fstring_to_format==0.1.2") as pkg_to_miss:
             output = main_tester(f"check_requirements -cm requirements.txt -ip {pkg_to_ignore.package}")
             assert pkg_to_ignore.package not in output
             assert pkg_to_miss.package in output
@@ -466,7 +466,7 @@ def test_main__raise_missing_error_ignore():
     """
     case = TestCase()
     with _pkg("SIESTAstepper==2.1.0") as pkg_to_ignore:
-        with _pkg("ANIAnimator==0.2.2") as pkg_to_miss:
+        with _pkg("fstring_to_format==0.1.2") as pkg_to_miss:
             with _pkg_file([pkg_to_ignore.package]) as ignored:
                 with case.assertRaises(ImportError):
                     output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name} -rme")
@@ -480,7 +480,7 @@ def test_main__raise_missing_error_ignore_packages():
     """
     case = TestCase()
     with _pkg("SIESTAstepper==2.1.0") as pkg_to_ignore:
-        with _pkg("ANIAnimator==0.2.2") as pkg_to_miss:
+        with _pkg("fstring_to_format==0.1.2") as pkg_to_miss:
             with case.assertRaises(ImportError):
                 output = main_tester(f"check_requirements -cm requirements.txt -ip {pkg_to_ignore} -rme")
                 assert pkg_to_ignore.package not in output
