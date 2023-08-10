@@ -90,9 +90,9 @@ def main():
     ignored_pkgs = []
     if args.check_missing or args.check_extra or args.raise_missing_error or args.raise_extra_error:
         if args.ignore:
-            with open(args.ignore, 'r') as f:
-                ignore_lines = f.read()
-            ignored_pkgs = parse_deps_tree(ignore_lines)
+            with open(args.ignore, 'r', encoding="utf-8") as file:
+                ignore_lines = file.read()
+                ignored_pkgs = parse_deps_tree(ignore_lines)
         elif args.ignore_packages:
             ignored_pkgs = parse_deps_tree(f"{chr(10).join(args.ignore_packages)}\n")
     if args.check_missing:

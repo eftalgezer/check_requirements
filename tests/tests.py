@@ -261,8 +261,8 @@ def test_find_missing_pkgs__ignored():
         }
     ]
     ignored_pkgs = [
-        {"name": "ignored_package_1"},
-        {"name": "ignored_package_2", "version": "2.0.0"}
+        {"name": "ignored_package_1", "deps": []},
+        {"name": "ignored_package_2", "version": "2.0.0", "deps": []}
     ]
     missing_pkgs = find_missing_pkgs_tester(deps_a, deps_b, ignored_pkgs)
     assert isinstance(missing_pkgs, list)
