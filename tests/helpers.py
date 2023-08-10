@@ -74,7 +74,7 @@ def _pkg_install(pkg):
     """
     Install the specified package.
     """
-    run(split(f"python -m pip install {pkg} --no-input"))
+    run(split(f"python -m pip install {pkg} --no-input --no-dependencies"))
 
 
 def _pkg_uninstall(pkg):
