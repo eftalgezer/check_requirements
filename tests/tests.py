@@ -40,21 +40,21 @@ def test_add_info():
     """
     deps = [
         {
-            'name': 'package1',
-            'version': '1.0',
-            'deps': [
+            "ame": "package1",
+            "version": "1.0",
+            "deps": [
                 {
-                    'name': 'package2',
-                    'version': '2.0',
-                    'deps': []
+                    "name": "package2",
+                    "version": "2.0",
+                    "deps": []
                 }
             ]
         }
     ]
     deps_with_info = add_info_tester(deps)
     assert isinstance(deps_with_info, list)
-    assert deps_with_info[0]['python_version'] is not None
-    assert deps_with_info[0]['sys_platform'] is not None
+    assert deps_with_info[0]["python_version"] is not None
+    assert deps_with_info[0]["sys_platform"] is not None
 
 
 def test_print_deps_tree():
@@ -63,20 +63,20 @@ def test_print_deps_tree():
     """
     deps = [
         {
-            'name': 'package1',
-            'version': '1.0',
-            'deps': [
+            "name": "package1",
+            "version": "1.0",
+            "deps": [
                 {
-                    'name': 'package2',
-                    'version': '2.0',
-                    'deps': []
+                    "name": "package2",
+                    "version": "2.0",
+                    "deps": []
                 }
             ]
         }
     ]
     printed_lines = print_deps_tree_tester(deps)
-    assert printed_lines[0] == 'package1==1.0'
-    assert printed_lines[1] == '  package2==2.0'
+    assert printed_lines[0] == "package1==1.0"
+    assert printed_lines[1] == "  package2==2.0"
     assert len(printed_lines) == 3
 
 
@@ -87,20 +87,20 @@ def test_print_deps_tree_with_info():
     """
     deps = [
         {
-            'name': 'package1',
-            'version': '1.0',
-            'deps': [
+            "name": "package1",
+            "version": "1.0",
+            "deps": [
                 {
-                    'name': 'package2',
-                    'version': '2.0',
-                    'deps': []
+                    "name": "package2",
+                    "version": "2.0",
+                    "deps": []
                 }
             ]
         }
     ]
     printed_lines = print_deps_tree_with_info_tester(deps, "3.11", "linux")
-    assert printed_lines[0] == 'package1==1.0; python_version==3.11 and sys_platform==linux'
-    assert printed_lines[1] == '  package2==2.0; python_version==3.11 and sys_platform==linux'
+    assert printed_lines[0] == "package1==1.0; python_version==3.11 and sys_platform==linux"
+    assert printed_lines[1] == "  package2==2.0; python_version==3.11 and sys_platform==linux"
     assert len(printed_lines) == 3
 
 
@@ -110,13 +110,13 @@ def test_write_deps_tree_to_file():
     """
     deps = [
         {
-            'name': 'package1',
-            'version': '1.0',
-            'deps': [
+            "name": "package1",
+            "version": "1.0",
+            "deps": [
                 {
-                    'name': 'package2',
-                    'version': '2.0',
-                    'deps': []
+                    "name": "package2",
+                    "version": "2.0",
+                    "deps": []
                 }
             ]
         }
@@ -137,13 +137,13 @@ def test_write_deps_tree_with_info_to_file():
     """
     deps = [
         {
-            'name': 'package1',
-            'version': '1.0',
-            'deps': [
+            "name": "package1",
+            "version": "1.0",
+            "deps": [
                 {
-                    'name': 'package2',
-                    'version': '2.0',
-                    'deps': []
+                    "name": "package2",
+                    "version": "2.0",
+                    "deps": []
                 }
             ]
         }
@@ -161,18 +161,18 @@ def test_is_pkg_in_subtree():
     Test if the is_pkg_in_subtree function correctly checks if a package is present in a dependency subtree.
     """
     pkg = {
-        'name': 'package2',
-        'version': '2.0'
+        "name": "package2",
+        "version": "2.0"
     }
     deps = [
         {
-            'name': 'package1',
-            'version': '1.0',
-            'deps': [
+            "name": "package1",
+            "version": "1.0",
+            "deps": [
                 {
-                    'name': 'package2',
-                    'version': '2.0',
-                    'deps': []
+                    "name": "package2",
+                    "version": "2.0",
+                    "deps": []
                 }
             ]
         }
@@ -186,30 +186,31 @@ def test_find_missing_pkgs():
     """
     deps_a = [
         {
-            'name': 'package1',
-            'version': '1.0',
-            'deps': [
+            "name": "package1",
+            "version": "1.0",
+            "deps": [
                 {
-                    'name': 'package2',
-                    'version': '2.0',
-                    'deps': []
+                    "name": "package2",
+                    "version": "2.0",
+                    "deps": []
                 }
             ]
         }
     ]
     deps_b = [
         {
-            'name': 'package1',
-            'version': '1.0',
-            'deps': []
+            "ame": "package1",
+            "version": "1.0",
+            "deps": []
         }
     ]
     ignored_pkgs = []
     missing_pkgs = find_missing_pkgs_tester(deps_a, deps_b, ignored_pkgs)
     assert isinstance(missing_pkgs, list)
     assert len(missing_pkgs) == 1
-    assert missing_pkgs[0]['name'] == 'package2'
-    assert missing_pkgs[0]['version'] == '2.0'
+    assert missing_pkgs == [{"name": "package2", "version": "2.0", "deps": []}]
+    assert missing_pkgs[0]["name"] == "package2"
+    assert missing_pkgs[0]["version"] == "2.0"
 
 
 def test_find_missing_pkgs__ignored():
@@ -219,43 +220,43 @@ def test_find_missing_pkgs__ignored():
     """
     deps_a = [
         {
-            'name': 'package1',
-            'version': '1.0',
-            'deps': [
+            "name": "package1",
+            "version": "1.0",
+            "deps": [
                 {
-                    'name': 'package2',
-                    'version': '2.0',
-                    'deps': []
+                    "name": "package2",
+                    "version": "2.0",
+                    "deps": []
                 }
             ]
         },
         {
-            'name': 'ignored_package_1',
-            'version': '1.0',
-            'deps': []
+            "name": "ignored_package_1",
+            "version": "1.0",
+            "deps": []
         },
         {
-            'name': 'ignored_package_2',
-            'version': '2.0.0',
-            'deps': []
+            "name": "ignored_package_2",
+            "version": "2.0.0",
+            "deps": []
         }
     ]
     deps_b = [
         {
-            'name': 'package1',
-            'version': '1.0',
-            'deps': []
+            "name": "package1",
+            "version": "1.0",
+            "deps": []
         }
     ]
     ignored_pkgs = [
-        {'name': 'ignored_package_1'},
-        {'name': 'ignored_package_2', 'version': '2.0.0'}
+        {"name": "ignored_package_1"},
+        {"name": "ignored_package_2", "version": "2.0.0"}
     ]
     missing_pkgs = find_missing_pkgs_tester(deps_a, deps_b, ignored_pkgs)
     assert isinstance(missing_pkgs, list)
     assert len(missing_pkgs) == 1
-    assert missing_pkgs[0]['name'] == 'package2'
-    assert missing_pkgs[0]['version'] == '2.0'
+    assert missing_pkgs[0]["name"] == "package2"
+    assert missing_pkgs[0]["version"] == "2.0"
 
 
 def test_check_and_raise_error():
@@ -264,22 +265,22 @@ def test_check_and_raise_error():
     """
     deps_a = [
         {
-            'name': 'package1',
-            'version': '1.0',
-            'deps': [
+            "name": "package1",
+            "version": "1.0",
+            "deps": [
                 {
-                    'name': 'package2',
-                    'version': '2.0',
-                    'deps': []
+                    "name": "package2",
+                    "version": "2.0",
+                    "deps": []
                 }
             ]
         }
     ]
     deps_b = [
         {
-            'name': 'package1',
-            'version': '1.0',
-            'deps': []
+            "name": "package1",
+            "version": "1.0",
+            "deps": []
         }
     ]
     ignored_pkgs = []
@@ -292,37 +293,37 @@ def test_check_and_raise_error__ignored():
     """
     deps_a = [
         {
-            'name': 'package1',
-            'version': '1.0',
-            'deps': [
+            "name": "package1",
+            "version": "1.0",
+            "deps": [
                 {
-                    'name': 'package2',
-                    'version': '2.0',
-                    'deps': []
+                    "name": "package2",
+                    "version": "2.0",
+                    "eps": []
                 }
             ]
         },
         {
-            'name': 'ignored_package_1',
-            'version': '1.0',
-            'deps': []
+            "name": "ignored_package_1",
+            "version": "1.0",
+            "deps": []
         },
         {
-            'name': 'ignored_package_2',
-            'version': '2.0.0',
-            'deps': []
+            "name": "ignored_package_2",
+            "version": "2.0.0",
+            "deps": []
         }
     ]
     deps_b = [
         {
-            'name': 'package1',
-            'version': '1.0',
-            'deps': []
+            "name": "package1",
+            "version": "1.0",
+            "deps": []
         }
     ]
     ignored_pkgs = [
-        {'name': 'ignored_package_1'},
-        {'name': 'ignored_package_2', 'version': '2.0.0'}
+        {"name": "ignored_package_1"},
+        {"name": "ignored_package_2", "version": "2.0.0"}
     ]
     check_and_raise_error_tester(deps_a, deps_b, ignored_pkgs)
 
@@ -425,6 +426,7 @@ def test_main__check_missing_ignore_packages():
     _pkg_uninstall("SIESTAstepper==2.1.0")
     _pkg_uninstall("ANIAnimator==0.2.2")
 
+
 def test_main__check_missing_ignore__2():
     """
     Test checking for missing dependencies using the main script while ignoring specified packages.
@@ -437,6 +439,7 @@ def test_main__check_missing_ignore__2():
         assert "fstring-to-format==0.1.2" in output
     _pkg_uninstall("SIESTAstepper==2.1.0")
     _pkg_uninstall("fstring_to_format==0.1.2")
+
 
 def test_main__check_missing_ignore_packages__2():
     """
@@ -501,7 +504,7 @@ def test_main__raise_missing_error_ignore():
     with _pkg_file(["SIESTAstepper==2.1.0"]) as ignored:
         with case.assertRaises(ImportError):
             output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name} -rme")
-            assert "SIESTAstepper==2.1.0"not in output
+            assert "SIESTAstepper==2.1.0" not in output
             assert "ANIAnimator==0.2.2" in output
     _pkg_uninstall("SIESTAstepper==2.1.0")
     _pkg_uninstall("ANIAnimator==0.2.2")
