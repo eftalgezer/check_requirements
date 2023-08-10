@@ -40,7 +40,7 @@ jobs:
             check_requirements -l
     - name: Check missing requirements
       run: |
-            check_requirements -cm requirements.txt -rme
+            check_requirements -cm requirements.txt -rme -ip check_requirements
     - name: Check extra requirements
       run: |
-            check_requirements -ce requirements.txt -ree
+            check_requirements -ce requirements.txt -ree -ip check_requirements
