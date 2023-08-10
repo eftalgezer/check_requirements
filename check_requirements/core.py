@@ -33,10 +33,10 @@ def get_list():
     str: A formatted text containing the list of installed packages and their dependencies.
     """
     with Popen(shlex.split("pipdeptree -fl"), shell=False, stdout=PIPE) as command:
-        lines = str(command.stdout.read())
+        lines = command.stdout.read()
+        lines = lines.decode("utf-8")
         if "------------------------------------------------------------------------\n" in lines:
             lines = lines.split("------------------------------------------------------------------------\n")[-1]
-        lines = str(lines)
     return lines
 
 
