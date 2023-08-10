@@ -81,7 +81,7 @@ def test_filter_deps_tree():
             "version": "2.0",
             "deps": [],
             "python_version": "3.8",
-            "sys_platform": "windows"
+            "sys_platform": "win32"
         },
         {
             "name": "package3",
@@ -113,7 +113,13 @@ def test_filter_deps_tree():
     assert all(pkg["sys_platform"] == "linux" for pkg in filtered_deps)
 
     # Test filtering by name, version, python_version, and sys_platform
-    filtered_deps = filter_deps_tree_tester(deps, name="package3", version="3.0", python_version="3.9", sys_platform="linux")
+    filtered_deps = filter_deps_tree_tester(
+        deps,
+        name="package3",
+        version="3.0",
+        python_version="3.9",
+        sys_platform="linux"
+    )
     assert len(filtered_deps) == 1
     assert filtered_deps[0]["name"] == "package3"
     assert filtered_deps[0]["version"] == "3.0"
