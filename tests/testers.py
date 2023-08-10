@@ -66,7 +66,8 @@ def write_deps_tree_to_file_tester(deps):
 
 def write_deps_tree_with_info_to_file_tester(deps, python_version, sys_platform):
     """
-    Tester function for write_deps_tree_with_info_to_file. Simulates writing the dependency tree with added info to a file.
+    Tester function for write_deps_tree_with_info_to_file. Simulates writing the dependency tree with added info to a
+    file.
     """
     written_lines = None
     with NamedTemporaryFile(delete=False) as temp_file:

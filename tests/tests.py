@@ -178,6 +178,18 @@ def test_is_pkg_in_subtree():
         }
     ]
     assert is_pkg_in_subtree_tester(pkg, deps)
+    pkg = {
+        "name": "package2",
+        "version": "2.0"
+    }
+    deps = [
+        {
+            "name": "package1",
+            "version": "1.0",
+            "deps": []
+        }
+    ]
+    assert not is_pkg_in_subtree_tester(pkg, deps)
 
 
 def test_find_missing_pkgs():
