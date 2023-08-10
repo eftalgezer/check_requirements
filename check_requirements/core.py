@@ -198,7 +198,14 @@ def find_missing_pkgs(deps_a, deps_b, ignored_pkgs):
     """
     missing_pkgs = []
     for pkg_a in deps_a:
-        if is_pkg_in_subtree(pkg_a, ignored_pkgs):
+        pkg_name = pkg_a["name"]
+        pkg_version = pkg_a.get("version")
+        if \
+                any(
+                    pkg_name == ignored["name"] and
+                    ((pkg_version == ignored.get("version")) if ignored.get("version") != "" else True)
+                    for ignored in ignored_pkgs
+                ):
             continue
         elif not is_pkg_in_subtree(pkg_a, deps_b):
             missing_pkgs.append(pkg_a)

@@ -261,7 +261,7 @@ def test_find_missing_pkgs__ignored():
         }
     ]
     ignored_pkgs = [
-        {"name": "ignored_package_1", "deps": []},
+        {"name": "ignored_package_1", "version": "", "deps": []},
         {"name": "ignored_package_2", "version": "2.0.0", "deps": []}
     ]
     missing_pkgs = find_missing_pkgs_tester(deps_a, deps_b, ignored_pkgs)
@@ -334,7 +334,7 @@ def test_check_and_raise_error__ignored():
         }
     ]
     ignored_pkgs = [
-        {"name": "ignored_package_1", "deps": []},
+        {"name": "ignored_package_1", "version": "", "deps": []},
         {"name": "ignored_package_2", "version": "2.0.0", "deps": []}
     ]
     check_and_raise_error_tester(deps_a, deps_b, ignored_pkgs)
