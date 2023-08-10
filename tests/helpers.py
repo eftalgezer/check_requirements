@@ -104,7 +104,7 @@ class _pkg:
         """
         Install the specified package when entering the context.
         """
-        Popen(split(f"python -m pip install {self.package} -q"))
+        Popen(split(f"python -m pip install {self.package} --no-input"))
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
