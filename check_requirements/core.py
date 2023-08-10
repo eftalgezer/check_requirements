@@ -123,7 +123,7 @@ def filter_deps_tree(deps, **kwargs):
     list: A filtered list of packages that match the specified criteria.
     """
     for key, val in kwargs.items():
-        deps = [pkg for pkg in deps if pkg[key] == val]
+        deps = [pkg for pkg in deps if pkg.get(key) == val]
     return deps
 
 
