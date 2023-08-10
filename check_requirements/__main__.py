@@ -94,7 +94,7 @@ def main():
                 ignore_lines = f.read()
             ignored_pkgs = parse_deps_tree(ignore_lines)
         elif args.ignore_packages:
-            ignored_pkgs = parse_deps_tree("\n".join(args.ignore_packages))
+            ignored_pkgs = parse_deps_tree(f"{chr(10).join(args.ignore_packages)}\n")
     if args.check_missing:
         deps_a = parse_deps_tree(get_list())
         deps_b = parse_deps_tree(args.check_missing)
