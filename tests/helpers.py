@@ -104,11 +104,11 @@ class _pkg:
         """
         Install the specified package when entering the context.
         """
-        Popen(split(f"python -m pip install {self.package}"))
+        Popen(split(f"yes | python -m pip install {self.package}"))
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        Popen(split(f"python -m pip uninstall {self.package}"))
+        Popen(split(f"yes | python -m pip uninstall {self.package}"))
 
 
 class _dummy_pkg_file:
