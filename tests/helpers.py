@@ -70,45 +70,18 @@ def _read_file(file_path):
         return file.read()
 
 
-class _pkg:
+def _pkg_install(pkg):
     """
-    Context manager class to install and uninstall a Python package for testing purposes.
-
-    This class is designed to be used as a context manager to install and uninstall a specified Python package
-    using the pip command line utility.
-
-    Args:
-        package (str): The name of the Python package to be installed and uninstalled.
-
-    Usage:
-        with _pkg("package_name"):
-            # The specified package is installed within this context
-            # Do your tests here
-        # The package is uninstalled automatically when exiting the context
-
-    Attributes:
-        package (str): The name of the Python package.
-
-    Methods:
-        __enter__(): Install the specified package when entering the context.
-        __exit__(): Uninstall the specified package when exiting the context.
+    Install the specified package.
     """
+    Popen(split(f"python -m pip install {pkg} --no-input"))
 
-    def __init__(self, package):
-        """
-        Initialize the _pkg object with the specified package name.
-        """
-        self.package = package
-        Popen(split(f"python -m pip install {self.package} --no-input"))
 
-    def __enter__(self):
-        """
-        Install the specified package when entering the context.
-        """
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        Popen(split(f"python -m pip uninstall {self.package} --yes"))
+def _pkg_uninstall(pkg):
+    """
+    Uninstall the specified package.
+    """
+    Popen(split(f"python -m pip uninstall {pkg} --yes"))
 
 
 class _dummy_pkg_file:
