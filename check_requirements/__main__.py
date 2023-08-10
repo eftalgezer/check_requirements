@@ -48,7 +48,7 @@ Examples:
 
 import sys
 import argparse
-from .core import get_list, parse_deps_tree, add_info, print_deps_tree, print_deps_tree_with_info, \
+from .core import get_list, parse_deps_tree, add_info, filter_deps_tree, print_deps_tree, print_deps_tree_with_info, \
     write_deps_tree_to_file, write_deps_tree_with_info_to_file, find_missing_pkgs, \
     check_and_raise_error
 
@@ -72,11 +72,10 @@ def main():
     parser.add_argument("--ignore-packages", "-ip", nargs="+", help="List of packages to ignore")
     parser.add_argument("--with-info", "-wi", action="store_true", help="Include Python version and OS info")
     args = parser.parse_args()
+    python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
+    sys_platform = sys.platform.lower()
     if args.list or args.list_file:
-        deps = parse_deps_tree(get_list())
-        deps = add_info(deps)
-        python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
-        sys_platform = sys.platform.lower()
+        deps = add_info(parse_deps_tree(get_list()))
         if args.with_info:
             if args.list:
                 print_deps_tree_with_info(deps, python_version, sys_platform)
@@ -88,12 +87,17 @@ def main():
             if args.list_file:
                 write_deps_tree_to_file(args.list_file, deps)
     ignored_pkgs = []
+    file_deps = None
     if args.check_missing or args.check_extra or args.raise_missing_error or args.raise_extra_error:
         dep_file = [check for check in [args.check_missing, args.check_extra] if check is not None][0]
-        dep_lines = None
         if dep_file:
             with open(dep_file, "r", encoding="utf-8") as file:
-                dep_lines = file.read()
+                file_deps = filter_deps_tree(
+                    parse_deps_tree(file.read()),
+                    python_version=python_version,
+                    sys_platform=sys_platform
+                )
+
         if args.ignore:
             with open(args.ignore, 'r', encoding="utf-8") as file:
                 ignore_lines = file.read()
@@ -101,33 +105,21 @@ def main():
         elif args.ignore_packages:
             ignored_pkgs = parse_deps_tree(f"{chr(10).join(args.ignore_packages)}\n")
     if args.check_missing:
-        deps_a = parse_deps_tree(get_list())
-        deps_b = parse_deps_tree(dep_lines)
-        deps_a = add_info(deps_a)
-        deps_b = add_info(deps_b)
-        missing_pkgs = find_missing_pkgs(deps_a, deps_b, ignored_pkgs)
+        deps = add_info(parse_deps_tree(get_list()))
+        missing_pkgs = find_missing_pkgs(deps, file_deps, ignored_pkgs)
         for pkg in missing_pkgs:
             print(f"Missing: {pkg['name']}{'==' if pkg.get('version') else ''}{pkg.get('version')}")
     if args.check_extra:
-        deps_a = parse_deps_tree(dep_lines)
-        deps_b = parse_deps_tree(get_list())
-        deps_a = add_info(deps_a)
-        deps_b = add_info(deps_b)
-        extra_pkgs = find_missing_pkgs(deps_a, deps_b, ignored_pkgs)
+        deps = add_info(parse_deps_tree(get_list()))
+        extra_pkgs = find_missing_pkgs(file_deps, deps, ignored_pkgs)
         for pkg in extra_pkgs:
             print(f"Extra: {pkg['name']}{'==' if pkg.get('version') else ''}{pkg.get('version')}")
     if args.raise_missing_error and args.check_missing:
-        deps_a = parse_deps_tree(get_list())
-        deps_b = parse_deps_tree(dep_lines)
-        deps_a = add_info(deps_a)
-        deps_b = add_info(deps_b)
-        check_and_raise_error(deps_a, deps_b, ignored_pkgs)
+        deps = add_info(parse_deps_tree(get_list()))
+        check_and_raise_error(deps, file_deps, ignored_pkgs)
     if args.raise_extra_error and args.check_extra:
-        deps_a = parse_deps_tree(dep_lines)
-        deps_b = parse_deps_tree(get_list())
-        deps_a = add_info(deps_a)
-        deps_b = add_info(deps_b)
-        check_and_raise_error(deps_a, deps_b, ignored_pkgs)
+        deps = add_info(parse_deps_tree(get_list()))
+        check_and_raise_error(file_deps, deps, ignored_pkgs)
 
 
 if __name__ == "__main__":
