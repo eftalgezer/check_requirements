@@ -118,12 +118,12 @@ def main():
             print(f"Extra: {pkg['name']}{'==' if pkg.get('version') != '' else ''}{pkg.get('version')}")
     if args.raise_missing_error and args.check_missing:
         deps_a = parse_deps_tree(get_list())
-        deps_b = parse_deps_tree(args.check_missing)
+        deps_b = parse_deps_tree(dep_lines)
         deps_a = add_info(deps_a)
         deps_b = add_info(deps_b)
         check_and_raise_error(deps_a, deps_b, ignored_pkgs)
     if args.raise_extra_error and args.check_extra:
-        deps_a = parse_deps_tree(args.check_extra)
+        deps_a = parse_deps_tree(dep_lines)
         deps_b = parse_deps_tree(get_list())
         deps_a = add_info(deps_a)
         deps_b = add_info(deps_b)
