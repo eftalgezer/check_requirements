@@ -9,7 +9,7 @@ import os
 import sys
 from io import StringIO
 from tempfile import NamedTemporaryFile
-from subprocess import Popen, PIPE
+from subprocess import Popen
 from shlex import split
 import re
 
@@ -99,22 +99,16 @@ class _pkg:
         Initialize the _pkg object with the specified package name.
         """
         self.package = package
+        Popen(split(f"python -m pip install {self.package} --no-input"))
 
     def __enter__(self):
         """
         Install the specified package when entering the context.
         """
-        await self.install()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         Popen(split(f"python -m pip uninstall {self.package} --yes"))
-
-    async def install(self):
-        with Popen(split(f"python -m pip install {self.package} --no-input"), stdout=PIPE) as command:
-            output = command.stdout.read().decode("utf-8")
-            if f"Successfully installed {self.package}".replace("==", "-").replace("_", "-") in output:
-                return True
 
 
 class _dummy_pkg_file:
