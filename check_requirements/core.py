@@ -162,6 +162,23 @@ def write_deps_tree_with_info_to_file(file_path, deps, python_version, sys_platf
     sys.stdout = original_stdout
 
 
+def is_pkg_equal(pkg1, pkg2):
+    """
+    Checks if two package dictionaries are equal.
+
+    Args:
+    pkg1 (dict): First package dictionary.
+    pkg2 (dict): Second package dictionary.
+
+    Returns:
+    bool: True if packages are equal, False otherwise.
+    """
+    return (pkg1["name"] == pkg2["name"] and
+            pkg1.get("version") == pkg2.get("version") and
+            pkg1.get("python_version") == pkg2.get("python_version") and
+            pkg1.get("sys_platform") == pkg2.get("sys_platform"))
+
+
 def is_pkg_in_subtree(pkg, deps):
     """
     Checks if a package exists in a dependency subtree.
@@ -174,10 +191,7 @@ def is_pkg_in_subtree(pkg, deps):
     bool: True if the package exists in the subtree, False otherwise.
     """
     for dep_pkg in deps:
-        if (pkg["name"] == dep_pkg["name"] and
-                pkg.get("version") == dep_pkg.get("version") and
-                (not pkg.get("python_version") or pkg.get("python_version") == dep_pkg.get("python_version")) and
-                (not pkg.get("sys_platform") or pkg.get("sys_platform") == dep_pkg.get("sys_platform"))):
+        if is_pkg_equal(pkg, dep_pkg):
             return True
         if is_pkg_in_subtree(pkg, dep_pkg["deps"]):
             return True
