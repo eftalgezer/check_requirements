@@ -11,9 +11,9 @@ from tempfile import NamedTemporaryFile
 from unittest.mock import patch
 import pytest
 from .helpers import _capture_stdout
-from check_requirements import get_list, parse_deps_tree, add_info, print_deps_tree, print_deps_tree_with_info, \
-    write_deps_tree_to_file, write_deps_tree_with_info_to_file, is_pkg_in_subtree, find_missing_pkgs, \
-    check_and_raise_error
+from check_requirements import get_list, parse_deps_tree, add_info, filter_deps_tree, print_deps_tree, \
+    print_deps_tree_with_info, write_deps_tree_to_file, write_deps_tree_with_info_to_file, is_pkg_in_subtree,\
+    find_missing_pkgs, check_and_raise_error
 
 
 def get_list_tester():
@@ -35,6 +35,20 @@ def add_info_tester(deps):
     Tester function for add_info. Simulates adding Python version and system platform information to dependencies.
     """
     return add_info(deps)
+
+
+def filter_deps_tree_tester(deps, **kwargs):
+    """
+    Tester function for filter_deps_tree.
+
+    Args:
+    deps (list): A list of hierarchical dictionaries representing the dependency tree.
+    **kwargs: Keyword arguments for filtering the packages.
+
+    Returns:
+    list: The result of the filter_deps_tree function.
+    """
+    return filter_deps_tree(deps, **kwargs)
 
 
 def print_deps_tree_tester(deps):

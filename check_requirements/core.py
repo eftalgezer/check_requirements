@@ -56,13 +56,14 @@ def parse_deps_tree(lines):
     lines.pop(-1)
     for line in lines:
         indent = line.count("  ")
-        pkg_info = line.strip().split("==")
+        info = line.split(";")
+        pkg_info = info[0].strip().split("==")
         pkg_name = None
         pkg_version = None
         if len(pkg_info) == 2:
             pkg_name, pkg_version = pkg_info[0], pkg_info[1]
         elif len(pkg_info) == 1:
-            pkg_name, pkg_version = pkg_info[0], ""
+            pkg_name, pkg_version = pkg_info[0], None
         while len(stack) > indent:
             stack.pop()
         parent = stack[-1] if stack else None
@@ -73,6 +74,11 @@ def parse_deps_tree(lines):
             "python_version": None,
             "sys_platform": None
         }
+        if len(info) == 2:
+            sys_info = info[1].split(" and ")
+            sys_info = [var.strip().split("==") for var in sys_info]
+            for var in sys_info:
+                pkg_data[var[0]] = var[1]
         if parent is not None:
             parent["deps"].append(pkg_data)
         else:
@@ -100,6 +106,27 @@ def add_info(deps):
     return deps
 
 
+def filter_deps_tree(deps, **kwargs):
+    """
+    Filters the dependency tree based on provided keyword arguments.
+
+    This function filters the dependency tree to include only packages that match the specified criteria
+    provided as keyword arguments. Each keyword argument should correspond to a key-value pair in the package
+    dictionary. Only packages that match all the specified criteria will be included in the result.
+
+    Args:
+    deps (list): A list of hierarchical dictionaries representing the dependency tree.
+    **kwargs: Keyword arguments for filtering the packages. Each keyword argument should correspond to a key-value
+        pair in the package dictionary.
+
+    Returns:
+    list: A filtered list of packages that match the specified criteria.
+    """
+    for key, val in kwargs.items():
+        deps = [pkg for pkg in deps if pkg[key] == val]
+    return deps
+
+
 def print_deps_tree(deps, indent=0):
     """
     Prints the dependency tree to the console.
@@ -109,7 +136,18 @@ def print_deps_tree(deps, indent=0):
     indent (int, optional): Indentation level for formatting. Defaults to 0.
     """
     for pkg in deps:
-        print("  " * indent + f"{pkg['name']}{'==' if pkg['version'] != '' else ''}{pkg['version']}")
+        print("  " * indent, end="")
+        semicolon = True
+        for count, (key, val) in enumerate(pkg.items(), start=1):
+            if key == "name":
+                print(val, end="")
+            if key == "version" and val:
+                print(f"=={val}", end="")
+            if pkg.items() > 2 and count > 2:
+                if semicolon:
+                    print(";", end=" ")
+                    semicolon = False
+                print(f"{key}=={val}", end=" and " if count != len(pkg.items()) else "\n")
         print_deps_tree(pkg['deps'], indent + 1)
 
 
@@ -125,7 +163,7 @@ def print_deps_tree_with_info(deps, python_version, sys_platform, indent=0):
     """
     for pkg in deps:
         print("  " * indent, end="")
-        print(f"{pkg['name']}{'==' if pkg['version'] != '' else ''}{pkg['version']};", end=" ")
+        print(f"{pkg['name']}{'==' if pkg['version'] else ''}{pkg['version']};", end=" ")
         print(f"python_version=={python_version} and sys_platform=={sys_platform}")
         print_deps_tree_with_info(pkg['deps'], python_version, sys_platform, indent + 1)
 
@@ -203,7 +241,7 @@ def find_missing_pkgs(deps_a, deps_b, ignored_pkgs):
         if \
                 any(
                     pkg_name == ignored["name"] and
-                    ((pkg_version == ignored.get("version")) if ignored.get("version") != "" else True)
+                    ((pkg_version == ignored.get("version")) if ignored.get("version") else True)
                     for ignored in ignored_pkgs
                 ):
             missing_pkgs.extend(find_missing_pkgs(pkg_a["deps"], deps_b, ignored_pkgs))
@@ -229,5 +267,5 @@ def check_and_raise_error(deps_a, deps_b, ignored_pkgs):
     if missing_pkgs:
         err_msg = "Missing packages:\n"
         for pkg in missing_pkgs:
-            err_msg += f"{pkg['name']}{'==' if pkg.get('version') != '' else ''}{pkg.get('version')}\n"
+            err_msg += f"{pkg['name']}{'==' if pkg.get('version') else ''}{pkg.get('version')}\n"
         raise ImportError(err_msg)

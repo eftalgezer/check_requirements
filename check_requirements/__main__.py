@@ -107,7 +107,7 @@ def main():
         deps_b = add_info(deps_b)
         missing_pkgs = find_missing_pkgs(deps_a, deps_b, ignored_pkgs)
         for pkg in missing_pkgs:
-            print(f"Missing: {pkg['name']}{'==' if pkg.get('version') != '' else ''}{pkg.get('version')}")
+            print(f"Missing: {pkg['name']}{'==' if pkg.get('version') else ''}{pkg.get('version')}")
     if args.check_extra:
         deps_a = parse_deps_tree(dep_lines)
         deps_b = parse_deps_tree(get_list())
@@ -115,7 +115,7 @@ def main():
         deps_b = add_info(deps_b)
         extra_pkgs = find_missing_pkgs(deps_a, deps_b, ignored_pkgs)
         for pkg in extra_pkgs:
-            print(f"Extra: {pkg['name']}{'==' if pkg.get('version') != '' else ''}{pkg.get('version')}")
+            print(f"Extra: {pkg['name']}{'==' if pkg.get('version') else ''}{pkg.get('version')}")
     if args.raise_missing_error and args.check_missing:
         deps_a = parse_deps_tree(get_list())
         deps_b = parse_deps_tree(dep_lines)

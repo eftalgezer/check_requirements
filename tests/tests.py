@@ -10,9 +10,10 @@ import re
 from contextlib import suppress
 from unittest import TestCase
 from .helpers import _search_pattern, _read_file, _pkg_install, _pkg_uninstall, _dummy_pkg_file, _pkg_file
-from .testers import get_list_tester, parse_deps_tree_tester, add_info_tester, print_deps_tree_tester, \
-    print_deps_tree_with_info_tester, write_deps_tree_to_file_tester, write_deps_tree_with_info_to_file_tester, \
-    is_pkg_in_subtree_tester, find_missing_pkgs_tester, check_and_raise_error_tester, main_tester
+from .testers import get_list_tester, parse_deps_tree_tester, add_info_tester, filter_deps_tree_tester, \
+    print_deps_tree_tester, print_deps_tree_with_info_tester, write_deps_tree_to_file_tester,\
+    write_deps_tree_with_info_to_file_tester, is_pkg_in_subtree_tester, find_missing_pkgs_tester,\
+    check_and_raise_error_tester, main_tester
 
 
 def test_get_list():
@@ -55,6 +56,73 @@ def test_add_info():
     assert isinstance(deps_with_info, list)
     assert deps_with_info[0]["python_version"] is not None
     assert deps_with_info[0]["sys_platform"] is not None
+
+
+def test_filter_deps_tree():
+    """
+    Test the filter_deps_tree function.
+
+    This test function checks the behavior of the filter_deps_tree function by providing a sample dependency tree
+    with additional information such as Python version and system platform. It then filters the tree using various
+    criteria and asserts the correctness of the filtered results.
+
+    Test cases cover filtering by 'name', 'version', 'python_version', and 'sys_platform'.
+    """
+    deps = [
+        {
+            "name": "package1",
+            "version": "1.0",
+            "deps": [],
+            "python_version": "3.7",
+            "sys_platform": "linux"
+        },
+        {
+            "name": "package2",
+            "version": "2.0",
+            "deps": [],
+            "python_version": "3.8",
+            "sys_platform": "windows"
+        },
+        {
+            "name": "package3",
+            "version": "3.0",
+            "deps": [],
+            "python_version": "3.9",
+            "sys_platform": "linux"
+        }
+    ]
+
+    # Test filtering by name
+    filtered_deps = filter_deps_tree_tester(deps, name="package2")
+    assert len(filtered_deps) == 1
+    assert filtered_deps[0]["name"] == "package2"
+
+    # Test filtering by version
+    filtered_deps = filter_deps_tree_tester(deps, version="1.0")
+    assert len(filtered_deps) == 1
+    assert filtered_deps[0]["version"] == "1.0"
+
+    # Test filtering by python_version
+    filtered_deps = filter_deps_tree_tester(deps, python_version="3.8")
+    assert len(filtered_deps) == 1
+    assert filtered_deps[0]["python_version"] == "3.8"
+
+    # Test filtering by sys_platform
+    filtered_deps = filter_deps_tree_tester(deps, sys_platform="linux")
+    assert len(filtered_deps) == 2
+    assert all(pkg["sys_platform"] == "linux" for pkg in filtered_deps)
+
+    # Test filtering by name, version, python_version, and sys_platform
+    filtered_deps = filter_deps_tree_tester(deps, name="package3", version="3.0", python_version="3.9", sys_platform="linux")
+    assert len(filtered_deps) == 1
+    assert filtered_deps[0]["name"] == "package3"
+    assert filtered_deps[0]["version"] == "3.0"
+    assert filtered_deps[0]["python_version"] == "3.9"
+    assert filtered_deps[0]["sys_platform"] == "linux"
+
+    # Test filtering with no matches
+    filtered_deps = filter_deps_tree_tester(deps, name="nonexistent_package")
+    assert len(filtered_deps) == 0
 
 
 def test_print_deps_tree():
