@@ -199,7 +199,7 @@ def test_find_missing_pkgs():
     ]
     deps_b = [
         {
-            "ame": "package1",
+            "name": "package1",
             "version": "1.0",
             "deps": []
         }
