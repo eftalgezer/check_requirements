@@ -36,7 +36,7 @@ def get_list():
         lines = str(command.stdout.read())
         if "------------------------------------------------------------------------\n" in lines:
             lines = lines.split("------------------------------------------------------------------------\n")[-1]
-        lines = lines.replace("b'", "").replace("'", "").replace("\\n", "\n")
+        lines = str(lines)
     return lines
 
 
