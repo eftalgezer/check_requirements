@@ -149,7 +149,7 @@ class _dummy_pkg_file:
         """
         with self.file:
             for i in range(1, self.count):
-                self.file.writelines(f"package{i}==0.1.0")
+                self.file.writelines(bytes(f"package{i}==0.1.0"))
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -197,7 +197,7 @@ class _pkg_file:
         """
         with self.file:
             for pkg in self.pkgs:
-                self.file.writelines(pkg)
+                self.file.writelines(bytes(pkg))
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
