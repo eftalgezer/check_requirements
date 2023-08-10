@@ -33,6 +33,8 @@ from .tests import (test_get_list,
                     test_main__check_missing,
                     test_main__check_missing_ignore,
                     test_main__check_missing_ignore_packages,
+                    test_main__check_missing_ignore__2,
+                    test_main__check_missing_ignore_packages__2,
                     test_main__check_extra,
                     test_main__check_extra_ignore,
                     test_main__check_extra_ignore_packages,
@@ -64,6 +66,8 @@ if __name__ == "__main__":
     test_main__check_missing()
     test_main__check_missing_ignore()
     test_main__check_missing_ignore_packages()
+    test_main__check_missing_ignore__2()
+    test_main__check_missing_ignore_packages__2()
     test_main__check_extra()
     test_main__check_extra_ignore()
     test_main__check_extra_ignore_packages()

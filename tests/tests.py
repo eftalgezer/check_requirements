@@ -425,6 +425,31 @@ def test_main__check_missing_ignore_packages():
     _pkg_uninstall("SIESTAstepper==2.1.0")
     _pkg_uninstall("ANIAnimator==0.2.2")
 
+def test_main__check_missing_ignore__2():
+    """
+    Test checking for missing dependencies using the main script while ignoring specified packages.
+    """
+    _pkg_install("SIESTAstepper==2.1.0")
+    _pkg_install("fstring_to_format==0.1.2")
+    with _pkg_file(["SIESTAstepper==2.1.0"]) as ignored:
+        output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name}")
+        assert "SIESTAstepper==2.1.0" not in output
+        assert "fstring_to_format==0.1.2" in output
+    _pkg_uninstall("SIESTAstepper==2.1.0")
+    _pkg_uninstall("fstring_to_format==0.1.2")
+
+def test_main__check_missing_ignore_packages__2():
+    """
+    Test checking for missing dependencies using the main script while ignoring specified packages.
+    """
+    _pkg_install("SIESTAstepper==2.1.0")
+    _pkg_install("fstring_to_format==0.1.2")
+    output = main_tester("check_requirements -cm requirements.txt -ip SIESTAstepper==2.1.0")
+    assert "SIESTAstepper==2.1.0" not in output
+    assert "fstring_to_format==0.1.2" in output
+    _pkg_uninstall("SIESTAstepper==2.1.0")
+    _pkg_uninstall("fstring_to_format==0.1.2")
+
 
 def test_main__check_extra():
     """
