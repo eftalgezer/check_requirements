@@ -205,7 +205,7 @@ def find_missing_pkgs(deps_a, deps_b, ignored_pkgs):
             continue
         if not is_pkg_in_subtree(pkg_a, deps_b):
             missing_pkgs.append(pkg_a)
-        find_missing_pkgs(pkg_a["deps"], deps_b, ignored_pkgs)
+        missing_pkgs.extend(find_missing_pkgs(pkg_a["deps"], deps_b, ignored_pkgs))
     return missing_pkgs
 
 
