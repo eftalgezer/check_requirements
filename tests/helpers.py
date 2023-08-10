@@ -108,6 +108,9 @@ class _pkg:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+
+    def uninstall(self):
         Popen(split(f"python -m pip uninstall {self.package} --yes"))
 
 

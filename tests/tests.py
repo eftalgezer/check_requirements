@@ -396,6 +396,7 @@ def test_main__check_missing():
     """
     with _pkg("SIESTAstepper") as pkg:
         assert pkg.package in main_tester("check_requirements -cm requirements.txt")
+        pkg.uninstall()
 
 
 def test_main__check_missing_ignore():
@@ -408,6 +409,8 @@ def test_main__check_missing_ignore():
                 output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name}")
                 assert pkg_to_ignore.package not in output
                 assert pkg_to_miss.package in output
+            pkg_to_miss.uninstall()
+        pkg_to_ignore.uninstall()
 
 
 def test_main__check_missing_ignore_packages():
@@ -419,6 +422,8 @@ def test_main__check_missing_ignore_packages():
             output = main_tester(f"check_requirements -cm requirements.txt -ip {pkg_to_ignore.package}")
             assert pkg_to_ignore.package not in output
             assert pkg_to_miss.package in output
+            pkg_to_miss.uninstall()
+        pkg_to_ignore.uninstall()
 
 
 def test_main__check_extra():
@@ -458,6 +463,7 @@ def test_main__raise_missing_error():
     with _pkg("SIESTAstepper") as pkg:
         with case.assertRaises(ImportError):
             assert pkg.package in main_tester("check_requirements -cm requirements.txt -rme")
+        pkg.uninstall()
 
 
 def test_main__raise_missing_error_ignore():
@@ -472,6 +478,8 @@ def test_main__raise_missing_error_ignore():
                     output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name} -rme")
                     assert pkg_to_ignore.package not in output
                     assert pkg_to_miss.package in output
+            pkg_to_miss.uninstall()
+        pkg_to_ignore.uninstall()
 
 
 def test_main__raise_missing_error_ignore_packages():
@@ -485,6 +493,8 @@ def test_main__raise_missing_error_ignore_packages():
                 output = main_tester(f"check_requirements -cm requirements.txt -ip {pkg_to_ignore} -rme")
                 assert pkg_to_ignore.package not in output
                 assert pkg_to_miss.package in output
+            pkg_to_miss.uninstall()
+        pkg_to_ignore.uninstall()
 
 
 def test_main__raise_extra_error():
