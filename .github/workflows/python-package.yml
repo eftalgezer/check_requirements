@@ -1,0 +1,83 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Python package
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12-dev"]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+    - name: Install dependencies
+      run: |
+        pip install setuptools --upgrade
+        pip install --upgrade pip
+        python -m pip install --upgrade pip
+        python -m pip install flake8 pytest
+        python -m pip install pipdeptree
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Run entry point
+      run: |
+        pip install .
+        check_requirements -l
+    - name: Test with pytest
+      run: |
+        pytest
+    - name: Generate Report
+      run: |
+        pip install codecov
+        pip install pytest-cov
+        pytest --cov=./ --cov-report=xml
+        codecov
+    - name: See coverage
+      run: |
+          ls
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3.1.4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        env_vars: OS,PYTHON
+        files: ./coverage.xml
+        flags: tests
+    - name: Pushing reports to Codacy (Windows)
+      if: "startsWith(matrix.os, 'windows')"
+      run: |
+            git clone https://github.com/codacy/codacy-coverage-reporter.git
+            cd codacy-coverage-reporter
+            sbt assembly
+            $jar = Convert-Path ../codacy-coverage-reporter/target/codacy-coverage-reporter-assembly-*.jar
+            java -jar $jar report -r ../coverage.xml --project-token ${{secrets.CODACY_TOKEN}}
+    - name: Pushing reports to Codacy (others)
+      if: "!startsWith(matrix.os, 'windows')"
+      run: |
+            export CODACY_PROJECT_TOKEN=${{secrets.CODACY_TOKEN}}
+            LATEST_VERSION="$(curl -Ls https://artifacts.codacy.com/bin/codacy-coverage-reporter/latest)"
+            curl -Ls -o codacy-coverage-reporter-assembly.jar "https://artifacts.codacy.com/bin/codacy-coverage-reporter/${LATEST_VERSION}/codacy-coverage-reporter-assembly.jar"
+            java -jar codacy-coverage-reporter-assembly.jar report -r coverage.xml
+
