@@ -311,7 +311,7 @@ def test_check_and_raise_error__ignored():
                 {
                     "name": "package2",
                     "version": "2.0",
-                    "eps": []
+                    "deps": []
                 }
             ]
         },
