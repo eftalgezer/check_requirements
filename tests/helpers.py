@@ -105,6 +105,7 @@ class _pkg:
         Install the specified package when entering the context.
         """
         Popen(split(f"python -m pip install {self.package}"))
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         Popen(split(f"python -m pip uninstall {self.package}"))
@@ -149,6 +150,7 @@ class _dummy_pkg_file:
         with self.file:
             for i in range(1, self.count):
                 self.file.writelines(f"package{i}==0.1.0")
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """
@@ -196,6 +198,7 @@ class _pkg_file:
         with self.file:
             for pkg in self.pkgs:
                 self.file.writelines(pkg)
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """
