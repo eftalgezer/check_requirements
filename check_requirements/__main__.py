@@ -89,6 +89,11 @@ def main():
                 write_deps_tree_to_file(args.list_file, deps)
     ignored_pkgs = []
     if args.check_missing or args.check_extra or args.raise_missing_error or args.raise_extra_error:
+        dep_file = [check for check in [args.check_missing, args.check_extra] if check is not None][0]
+        dep_lines = None
+        if dep_file:
+            with open(dep_file, "r", encoding="utf-8") as file:
+                dep_lines = file.read()
         if args.ignore:
             with open(args.ignore, 'r', encoding="utf-8") as file:
                 ignore_lines = file.read()
@@ -97,14 +102,14 @@ def main():
             ignored_pkgs = parse_deps_tree(f"{chr(10).join(args.ignore_packages)}\n")
     if args.check_missing:
         deps_a = parse_deps_tree(get_list())
-        deps_b = parse_deps_tree(args.check_missing)
+        deps_b = parse_deps_tree(dep_lines)
         deps_a = add_info(deps_a)
         deps_b = add_info(deps_b)
         missing_pkgs = find_missing_pkgs(deps_a, deps_b, ignored_pkgs)
         for pkg in missing_pkgs:
             print(f"Missing: {pkg['name']}{'==' if pkg.get('version') != '' else ''}{pkg.get('version')}")
     if args.check_extra:
-        deps_a = parse_deps_tree(args.check_extra)
+        deps_a = parse_deps_tree(dep_lines)
         deps_b = parse_deps_tree(get_list())
         deps_a = add_info(deps_a)
         deps_b = add_info(deps_b)
