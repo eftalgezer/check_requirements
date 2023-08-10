@@ -121,7 +121,7 @@ class _dummy_pkg_file:
         Create the temporary file and write dummy package names.
         """
         with self.file:
-            for i in range(1, self.count):
+            for i in range(1, self.count + 1):
                 self.file.write(f"package{i}==0.1.0\n".encode("utf-8"))
         return self
 
