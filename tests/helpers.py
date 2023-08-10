@@ -9,7 +9,7 @@ import os
 import sys
 from io import StringIO
 from tempfile import NamedTemporaryFile
-from subprocess import Popen
+from subprocess import run
 from shlex import split
 import re
 
@@ -74,14 +74,14 @@ def _pkg_install(pkg):
     """
     Install the specified package.
     """
-    Popen(split(f"python -m pip install {pkg} --no-input"))
+    run(split(f"python -m pip install {pkg} --no-input"))
 
 
 def _pkg_uninstall(pkg):
     """
     Uninstall the specified package.
     """
-    Popen(split(f"python -m pip uninstall {pkg} --yes"))
+    run(split(f"python -m pip uninstall {pkg} --yes"))
 
 
 class _dummy_pkg_file:
