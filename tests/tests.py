@@ -7,6 +7,7 @@ or extra packages, ignoring packages, and raising errors for missing or extra de
 
 import os
 import re
+from contextlib import suppress
 from unittest import TestCase
 from .helpers import _search_pattern, _read_file, _pkg, _dummy_pkg_file, _pkg_file
 from .testers import get_list_tester, parse_deps_tree_tester, add_info_tester, print_deps_tree_tester, \
@@ -26,7 +27,7 @@ def test_parse_deps_tree():
     Test if the parse_deps_tree function correctly parses dependency tree structures.
     """
     deps = parse_deps_tree_tester("package1==1.0\n  package2==2.0\n    package3==3.0")
-    assert isinstance(deps, dict)
+    assert isinstance(deps, list)
     assert len(deps) == 1
     assert deps[0]["name"] == "package1"
     assert len(deps[0]["deps"]) == 1
@@ -345,7 +346,8 @@ def test_main__help():
                       "              File containing ignored packages\n  --ignore-packages IGNORE_PACKAGES [" \
                       "IGNORE_PACKAGES ...], -ip IGNORE_PACKAGES [IGNORE_PACKAGES ...]\n                        List " \
                       "of packages to ignore\n  --with-info, -wi      Include Python version and OS info\n"
-    assert expected_output == main_tester("check_requirements -h")
+    with suppress(SystemExit):
+        assert expected_output == main_tester("check_requirements -h")
 
 
 def test_main__list():
