@@ -12,10 +12,16 @@ check_requirements is a Python tool for managing and analyzing dependencies in y
 
 ## Installation
 
-You can install check_requirements using pip:
+check_requirements can be installed using pip:
 
 ```bash
 pip install check_requirements
+
+# to make sure you have the latest version
+pip install -U check_requirements
+
+# latest available code base
+pip install -U git+https://github.com/eftalgezer/check_requirements.git
 ```
 ## Usage
 ### Listing Dependencies
