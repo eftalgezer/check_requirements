@@ -106,7 +106,7 @@ class _pkg:
         """
         Popen(split(f"python -m pip install {self.package}"))
 
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_val, exc_tb):
         Popen(split(f"python -m pip uninstall {self.package}"))
 
 
@@ -150,7 +150,7 @@ class _dummy_pkg_file:
             for i in range(1, self.count):
                 self.file.writelines(f"package{i}==0.1.0")
 
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_val, exc_tb):
         """
         Delete the temporary file when exiting the context.
         """
@@ -197,7 +197,7 @@ class _pkg_file:
             for pkg in self.pkgs:
                 self.file.writelines(pkg)
 
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_val, exc_tb):
         """
         Delete the temporary file when exiting the context.
         """
