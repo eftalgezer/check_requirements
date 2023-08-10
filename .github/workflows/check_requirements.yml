@@ -37,10 +37,10 @@ jobs:
     - name: See requirements
       if: "!startsWith(matrix.os, 'windows')"
       run: |
-            check_requirements -l
+            check_requirements -l -wi
     - name: Check missing requirements
       run: |
-            check_requirements -cm requirements.txt -rme -ip check_requirements
+            check_requirements -cm requirements.txt -rme -ip check_requirements -wi
     - name: Check extra requirements
       run: |
-            check_requirements -ce requirements.txt -ree -ip check_requirements
+            check_requirements -ce requirements.txt -ree -ip check_requirements -wi
