@@ -179,9 +179,7 @@ def is_pkg_in_subtree(pkg, deps):
                 (not pkg.get("python_version") or pkg.get("python_version") == dep_pkg.get("python_version")) and
                 (not pkg.get("sys_platform") or pkg.get("sys_platform") == dep_pkg.get("sys_platform"))):
             return True
-        if is_pkg_in_subtree(pkg, dep_pkg["deps"]):
-            return True
-    return False
+        is_pkg_in_subtree(pkg, dep_pkg["deps"])
 
 
 def find_missing_pkgs(deps_a, deps_b, ignored_pkgs):
