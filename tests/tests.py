@@ -396,7 +396,8 @@ def test_main__check_missing():
     """
     with _pkg("SIESTAstepper") as pkg:
         while not pkg.installed:
-            pass
+            if pkg.installed:
+                break
         assert pkg.package in main_tester("check_requirements -cm requirements.txt")
 
 
