@@ -224,5 +224,5 @@ def check_and_raise_error(deps_a, deps_b, ignored_pkgs):
     if missing_pkgs:
         err_msg = "Missing packages:\n"
         for pkg in missing_pkgs:
-            err_msg += f"{pkg['name']}=={pkg.get('version', 'unknown')}\n"
+            err_msg += f"{pkg['name']}{'==' if pkg.get('version') != '' else ''}{pkg.get('version')}\n"
         raise ImportError(err_msg)
