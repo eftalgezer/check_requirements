@@ -545,7 +545,9 @@ def test_main__check_extra():
     Test checking for extra dependencies using the main script.
     """
     with _dummy_pkg_file(1) as dummy:
-        assert "package1" in main_tester(f"check_requirements -ce {dummy.file.name}")
+        output = main_tester(f"check_requirements -ce {dummy.file.name}")
+        print(output)
+        assert "package1" in output
 
 
 def test_main__check_extra_ignore():
