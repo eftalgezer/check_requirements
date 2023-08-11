@@ -122,7 +122,7 @@ class _dummy_pkg_file:
         """
         with self.file:
             for i in range(1, self.count + 1):
-                self.file.write(f"package{i}==0.1.0\n".encode("utf-8"))
+                self.file.write(f"package{i} == 0.1.0\n".encode("utf-8"))
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):

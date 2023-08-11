@@ -108,12 +108,12 @@ def main():
         deps = add_info(parse_deps_tree(get_list()))
         missing_pkgs = find_missing_pkgs(deps, file_deps, ignored_pkgs)
         for pkg in missing_pkgs:
-            print(f"Missing: {pkg['name']}{f'''=={pkg.get('version')}''' if pkg.get('version') else ''}")
+            print(f"Missing: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
     if args.check_extra:
         deps = add_info(parse_deps_tree(get_list()))
         extra_pkgs = find_missing_pkgs(file_deps, deps, ignored_pkgs)
         for pkg in extra_pkgs:
-            print(f"Extra: {pkg['name']}{f'''=={pkg.get('version')}''' if pkg.get('version') else ''}")
+            print(f"Extra: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
     if args.raise_missing_error and args.check_missing:
         deps = add_info(parse_deps_tree(get_list()))
         check_and_raise_error(deps, file_deps, ignored_pkgs)
