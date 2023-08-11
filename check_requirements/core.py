@@ -231,7 +231,7 @@ def is_pkg_in_subtree(pkg, deps):
     return False
 
 
-def find_missing_pkgs(deps_a, deps_b, ignored_pkgs):
+def find_missing_pkgs(deps_a, deps_b, ignored_pkgs=[]):
     """
     Finds missing packages in deps_a compared to deps_b, ignoring specified packages.
 
@@ -260,7 +260,7 @@ def find_missing_pkgs(deps_a, deps_b, ignored_pkgs):
     return list({name["name"]: name for name in missing_pkgs}.values())
 
 
-def check_and_raise_error(deps_a, deps_b, ignored_pkgs):
+def check_and_raise_error(deps_a, deps_b, ignored_pkgs=[]):
     """
     Raises ImportError if missing packages are found in deps_a compared to deps_b, ignoring specified packages.
 

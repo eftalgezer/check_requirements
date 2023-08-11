@@ -74,8 +74,10 @@ def main():
     args = parser.parse_args()
     python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
     sys_platform = sys.platform.lower()
+    deps = parse_deps_tree(get_list())
+    ignored_pkgs = []
+    file_deps = None
     if args.list or args.list_file:
-        deps = parse_deps_tree(get_list())
         if args.list:
             print_deps_tree(deps)
         if args.list_file:
@@ -86,18 +88,23 @@ def main():
                 print_deps_tree_with_info(deps, python_version, sys_platform)
             if args.list_file:
                 write_deps_tree_with_info_to_file(args.list_file, deps, python_version, sys_platform)
-    ignored_pkgs = []
-    file_deps = None
     if args.check_missing or args.check_extra or args.raise_missing_error or args.raise_extra_error:
-        dep_file = [check for check in [args.check_missing, args.check_extra] if check is not None][0]
+        dep_file = [check for check in [args.check_missing, args.check_extra] if check][0]
         if dep_file:
             with open(dep_file, "r", encoding="utf-8") as file:
-                file_deps = filter_deps_tree(
-                    parse_deps_tree(file.read()),
-                    python_version=python_version,
-                    sys_platform=sys_platform
+                file_deps = parse_deps_tree(file.read())
+                kwargs_len = len(
+                    {
+                        key: val for key, val in file_deps[0].items()
+                        if val is not None and key in ["python_version", "sys_platform"]
+                    }
                 )
-
+                if kwargs_len == 2:
+                    filter_deps_tree(deps, python_version=python_version, sys_platform=sys_platform)
+                if kwargs_len == 1 and file_deps[0].get("python_version"):
+                    filter_deps_tree(deps, python_version=python_version)
+                if kwargs_len == 1 and file_deps[0].get("sys_platform"):
+                    filter_deps_tree(deps, sys_platform=sys_platform)
         if args.ignore:
             with open(args.ignore, 'r', encoding="utf-8") as file:
                 ignore_lines = file.read()
