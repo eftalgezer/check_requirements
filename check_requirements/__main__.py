@@ -100,11 +100,11 @@ def main():
                     }
                 )
                 if kwargs_len == 2:
-                    filter_deps_tree(deps, python_version=python_version, sys_platform=sys_platform)
+                    deps = filter_deps_tree(deps, python_version=python_version, sys_platform=sys_platform)
                 if kwargs_len == 1 and file_deps[0].get("python_version"):
-                    filter_deps_tree(deps, python_version=python_version)
+                    deps = filter_deps_tree(deps, python_version=python_version)
                 if kwargs_len == 1 and file_deps[0].get("sys_platform"):
-                    filter_deps_tree(deps, sys_platform=sys_platform)
+                    deps = filter_deps_tree(deps, sys_platform=sys_platform)
         if args.ignore:
             with open(args.ignore, 'r', encoding="utf-8") as file:
                 ignore_lines = file.read()
