@@ -77,6 +77,7 @@ def main():
     deps = parse_deps_tree(get_list())
     ignored_pkgs = []
     file_deps = None
+    print(python_version, sys_platform)
     if args.list or args.list_file:
         if args.list:
             print_deps_tree(deps)
