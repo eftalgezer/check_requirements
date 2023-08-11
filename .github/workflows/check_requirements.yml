@@ -40,7 +40,7 @@ jobs:
             check_requirements -l -wi
     - name: Check missing requirements
       run: |
-            check_requirements -cm requirements.txt -rme -ip "check-requirements @ file:///home/runner/work/check_requirements/check_requirements" -wi
+            check_requirements -cm requirements.txt -rme -ip "check-requirements" -wi
     - name: Check extra requirements
       run: |
-            check_requirements -ce requirements.txt -ree -ip "check-requirements @ file:///home/runner/work/check_requirements/check_requirements" -wi
+            check_requirements -ce requirements.txt -ree -ip "check-requirements" -wi
