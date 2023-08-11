@@ -20,7 +20,7 @@ def test_get_list():
     """
     Test if the get_list function correctly lists dependencies.
     """
-    assert _search_pattern(get_list_tester(), r"([^\s]+) == [^\n]+", re.DOTALL)
+    assert _search_pattern(get_list_tester(), r"([^\s]+)==[^\n]+", re.DOTALL)
 
 
 def test_parse_deps_tree():
