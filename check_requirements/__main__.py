@@ -112,20 +112,20 @@ def main():
         elif args.ignore_packages:
             ignored_pkgs = parse_deps_tree(f"{chr(10).join(args.ignore_packages)}\n")
     if args.check_missing:
-        deps = add_info(parse_deps_tree(get_list()))
+        deps = add_info(deps)
         missing_pkgs = find_missing_pkgs(deps, file_deps, ignored_pkgs)
         for pkg in missing_pkgs:
             print(f"Missing: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
     if args.check_extra:
-        deps = add_info(parse_deps_tree(get_list()))
+        deps = add_info(deps)
         extra_pkgs = find_missing_pkgs(file_deps, deps, ignored_pkgs)
         for pkg in extra_pkgs:
             print(f"Extra: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
     if args.raise_missing_error and args.check_missing:
-        deps = add_info(parse_deps_tree(get_list()))
+        deps = add_info(deps)
         check_and_raise_error(deps, file_deps, ignored_pkgs)
     if args.raise_extra_error and args.check_extra:
-        deps = add_info(parse_deps_tree(get_list()))
+        deps = add_info(deps)
         check_and_raise_error(file_deps, deps, ignored_pkgs)
 
 
