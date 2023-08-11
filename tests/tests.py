@@ -27,7 +27,7 @@ def test_parse_deps_tree():
     """
     Test if the parse_deps_tree function correctly parses dependency tree structures.
     """
-    deps = parse_deps_tree_tester("package1==1.0\n  package2==2.0\n    package3==3.0")
+    deps = parse_deps_tree_tester("package1 == 1.0\n  package2 == 2.0\n    package3 == 3.0")
     assert isinstance(deps, list)
     assert len(deps) == 1
     assert deps[0]["name"] == "package1"
@@ -149,8 +149,8 @@ def test_print_deps_tree():
         }
     ]
     printed_lines = print_deps_tree_tester(deps)
-    assert printed_lines[0] == "package1==1.0"
-    assert printed_lines[1] == "  package2==2.0"
+    assert printed_lines[0] == "package1 == 1.0"
+    assert printed_lines[1] == "  package2 == 2.0"
     assert len(printed_lines) == 3
 
 
@@ -198,8 +198,8 @@ def test_write_deps_tree_to_file():
 
     written_lines = write_deps_tree_to_file_tester(deps)
     expected_lines = [
-        "package1==1.0\n",
-        "  package2==2.0\n"
+        "package1 == 1.0\n",
+        "  package2 == 2.0\n"
     ]
     assert written_lines == expected_lines
 
@@ -492,7 +492,7 @@ def test_main__check_missing_ignore():
     """
     _pkg_install("SIESTAstepper==2.1.0")
     _pkg_install("ANIAnimator==0.2.2")
-    with _pkg_file(["SIESTAstepper==2.1.0"]) as ignored:
+    with _pkg_file(["SIESTAstepper == 2.1.0"]) as ignored:
         output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name}")
         assert "SIESTAstepper == 2.1.0" not in output
         assert "ANIAnimator == 0.2.2" in output
@@ -519,7 +519,7 @@ def test_main__check_missing_ignore__2():
     """
     _pkg_install("SIESTAstepper==2.1.0")
     _pkg_install("fstring_to_format==0.1.2")
-    with _pkg_file(["SIESTAstepper==2.1.0"]) as ignored:
+    with _pkg_file(["SIESTAstepper == 2.1.0"]) as ignored:
         output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name}")
         assert "SIESTAstepper == 2.1.0" not in output
         assert "fstring-to-format == 0.1.2" in output
@@ -587,7 +587,7 @@ def test_main__raise_missing_error_ignore():
     case = TestCase()
     _pkg_install("SIESTAstepper==2.1.0")
     _pkg_install("ANIAnimator==0.2.2")
-    with _pkg_file(["SIESTAstepper==2.1.0"]) as ignored:
+    with _pkg_file(["SIESTAstepper == 2.1.0"]) as ignored:
         with case.assertRaises(ImportError):
             output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name} -rme")
             assert "SIESTAstepper == 2.1.0" not in output
