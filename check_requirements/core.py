@@ -62,7 +62,7 @@ def parse_deps_tree(lines):
         pkg_name = None
         pkg_version = None
         if len(pkg_info) == 2:
-            pkg_name, pkg_version = pkg_info[0], pkg_info[1]
+            pkg_name, pkg_version = pkg_info[0].strip(), pkg_info[1].strip()
         elif len(pkg_info) == 1:
             pkg_name, pkg_version = pkg_info[0], None
         while len(stack) > indent:
@@ -79,14 +79,12 @@ def parse_deps_tree(lines):
             sys_info = info[1].split(" and ")
             sys_info = [var.strip().split("==") for var in sys_info]
             for var in sys_info:
-                pkg_data[var[0]] = var[1]
+                pkg_data[var[0].strip()] = var[1].strip()
         if parent is not None:
             parent["deps"].append(pkg_data)
         else:
             deps.append(pkg_data)
-
         stack.append(pkg_data)
-        print("+", pkg_data)
     return deps
 
 
