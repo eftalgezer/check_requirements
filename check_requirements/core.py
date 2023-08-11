@@ -144,7 +144,7 @@ def print_deps_tree(deps, indent=0):
                 print(val, end="")
             if key == "version" and val:
                 print(f" == {val}", end="")
-            if len(pkg.items()) > 3 and count > 2 and key != "deps":
+            if len({key:val for key,val in pkg.items() if val is not None}) > 3 and count > 2 and key != "deps":
                 if semicolon:
                     print(";", end=" ")
                     semicolon = False
