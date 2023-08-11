@@ -105,7 +105,7 @@ def main():
                     file_deps = filter_deps_tree(deps, python_version=python_version)
                 if kwargs_len == 1 and file_deps[0].get("sys_platform"):
                     file_deps = filter_deps_tree(deps, sys_platform=sys_platform)
-                print("deps", deps)
+                print("deps", file_deps)
         if args.ignore:
             with open(args.ignore, 'r', encoding="utf-8") as file:
                 ignore_lines = file.read()
