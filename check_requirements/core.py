@@ -151,7 +151,7 @@ def print_deps_tree(deps, indent=0):
                 print(f" @ {val}", end="")
             if key == "version" and val:
                 print(f" == {val}", end="")
-            if len({key: val for key, val in pkg.items() if val is not None}) > 3 and count > 3 and key != "deps":
+            if key not in ["name", "at", "version", "deps"]:
                 if semicolon:
                     print(";", end=" ")
                     semicolon = False
@@ -231,7 +231,7 @@ def is_pkg_in_subtree(pkg, deps):
     return False
 
 
-def find_missing_pkgs(deps_a, deps_b, ignored_pkgs=[]):
+def find_missing_pkgs(deps_a, deps_b, ignored_pkgs=None):
     """
     Finds missing packages in deps_a compared to deps_b, ignoring specified packages.
 
@@ -243,6 +243,8 @@ def find_missing_pkgs(deps_a, deps_b, ignored_pkgs=[]):
     Returns:
     list: A list of missing packages.
     """
+    if not ignored_pkgs:
+        ignored_pkgs = []
     missing_pkgs = []
     for pkg_a in deps_a:
         pkg_name = pkg_a["name"]
@@ -260,7 +262,7 @@ def find_missing_pkgs(deps_a, deps_b, ignored_pkgs=[]):
     return list({name["name"]: name for name in missing_pkgs}.values())
 
 
-def check_and_raise_error(deps_a, deps_b, ignored_pkgs=[]):
+def check_and_raise_error(deps_a, deps_b, ignored_pkgs=None):
     """
     Raises ImportError if missing packages are found in deps_a compared to deps_b, ignoring specified packages.
 
@@ -272,6 +274,8 @@ def check_and_raise_error(deps_a, deps_b, ignored_pkgs=[]):
     Raises:
     ImportError: If missing packages are found.
     """
+    if not ignored_pkgs:
+        ignored_pkgs = []
     missing_pkgs = find_missing_pkgs(deps_a, deps_b, ignored_pkgs)
     if missing_pkgs:
         err_msg = "Missing packages:\n"
