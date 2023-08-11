@@ -78,7 +78,6 @@ def parse_deps_tree(lines):
             "name": pkg_name,
             "at": pkg_at,
             "version": pkg_version,
-            "deps": [],
             "python_version": None,
             "sys_platform": None
         }
@@ -87,6 +86,7 @@ def parse_deps_tree(lines):
             sys_info = [var.strip().split("==") for var in sys_info]
             for var in sys_info:
                 pkg_data[var[0].strip()] = var[1].strip()
+        pkg_data["deps"] = []
         if parent is not None:
             parent["deps"].append(pkg_data)
         else:

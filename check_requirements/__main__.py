@@ -93,6 +93,7 @@ def main():
         if dep_file:
             with open(dep_file, "r", encoding="utf-8") as file:
                 file_deps = parse_deps_tree(file.read())
+                print("file_deps", file_deps)
                 kwargs_len = len(
                     {
                         key: val for key, val in file_deps[0].items()
