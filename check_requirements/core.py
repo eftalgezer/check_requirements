@@ -7,6 +7,7 @@ Functions:
 - get_list(): Returns a list of installed packages and their dependencies as text.
 - parse_deps_tree(lines: str): Parses the dependency tree from lines and returns a hierarchical dictionary.
 - add_info(deps: dict): Adds Python version and system platform information to the dependency tree.
+- filter_deps_tree(deps, **kwargs): Filters the dependency tree based on provided keyword arguments.
 - print_deps_tree(deps: dict, indent: int = 0): Prints the dependency tree to the console.
 - print_deps_tree_with_info(deps: dict, python_version: str, sys_platform: str, indent: int = 0):
   Prints the dependency tree with version and platform info to the console.
@@ -147,10 +148,10 @@ def print_deps_tree(deps, indent=0):
             if key == "name":
                 print(val, end="")
             if key == "at" and val:
-               print(f" @ {val}", end="")
+                print(f" @ {val}", end="")
             if key == "version" and val:
                 print(f" == {val}", end="")
-            if len({key:val for key,val in pkg.items() if val is not None}) > 3 and count > 3 and key != "deps":
+            if len({key: val for key, val in pkg.items() if val is not None}) > 3 and count > 3 and key != "deps":
                 if semicolon:
                     print(";", end=" ")
                     semicolon = False
@@ -221,10 +222,9 @@ def is_pkg_in_subtree(pkg, deps):
     bool: True if the package exists in the subtree, False otherwise.
     """
     for dep_pkg in deps:
-        if (pkg["name"] == dep_pkg["name"] and
-                pkg.get("version") == dep_pkg.get("version") and
-                (not pkg.get("python_version") or pkg.get("python_version") == dep_pkg.get("python_version")) and
-                (not pkg.get("sys_platform") or pkg.get("sys_platform") == dep_pkg.get("sys_platform"))):
+        if (pkg["name"] == dep_pkg["name"]
+                and ((pkg.get("version") == dep_pkg.get("version"))
+                if pkg.get("version") and dep_pkg.get("version") else True)):
             return True
         if is_pkg_in_subtree(pkg, dep_pkg["deps"]):
             return True
