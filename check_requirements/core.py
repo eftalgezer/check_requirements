@@ -60,16 +60,22 @@ def parse_deps_tree(lines):
         info = line.split(";")
         pkg_info = info[0].strip().split("==")
         pkg_name = None
+        pkg_at = None
         pkg_version = None
         if len(pkg_info) == 2:
             pkg_name, pkg_version = pkg_info[0].strip(), pkg_info[1].strip()
         elif len(pkg_info) == 1:
             pkg_name, pkg_version = pkg_info[0], None
+        if "@" in pkg_name:
+            pkg_name = pkg_name.split("@")
+            pkg_at = pkg_name[1].strip()
+            pkg_name = pkg_name[0].strip()
         while len(stack) > indent:
             stack.pop()
         parent = stack[-1] if stack else None
         pkg_data = {
             "name": pkg_name,
+            "at": pkg_at,
             "version": pkg_version,
             "deps": [],
             "python_version": None,
@@ -140,9 +146,11 @@ def print_deps_tree(deps, indent=0):
         for count, (key, val) in enumerate(pkg.items(), start=1):
             if key == "name":
                 print(val, end="")
+            if key == "at" and val:
+               print(f" @ {val}", end="")
             if key == "version" and val:
                 print(f" == {val}", end="")
-            if len({key:val for key,val in pkg.items() if val is not None}) > 3 and count > 2 and key != "deps":
+            if len({key:val for key,val in pkg.items() if val is not None}) > 3 and count > 3 and key != "deps":
                 if semicolon:
                     print(";", end=" ")
                     semicolon = False
