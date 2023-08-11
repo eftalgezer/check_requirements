@@ -27,7 +27,7 @@ def test_parse_deps_tree():
     """
     Test if the parse_deps_tree function correctly parses dependency tree structures.
     """
-    deps = parse_deps_tree_tester("package1 == 1.0\n  package2 == 2.0\n    package3 == 3.0")
+    deps = parse_deps_tree_tester("package1==1.0\n  package2==2.0\n    package3==3.0")
     assert isinstance(deps, list)
     assert len(deps) == 1
     assert deps[0]["name"] == "package1"
