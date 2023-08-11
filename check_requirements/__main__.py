@@ -75,17 +75,17 @@ def main():
     python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
     sys_platform = sys.platform.lower()
     if args.list or args.list_file:
-        deps = add_info(parse_deps_tree(get_list()))
+        deps = parse_deps_tree(get_list())
+        if args.list:
+            print_deps_tree(deps)
+        if args.list_file:
+            write_deps_tree_to_file(args.list_file, deps)
         if args.with_info:
+            deps = add_info(deps)
             if args.list:
                 print_deps_tree_with_info(deps, python_version, sys_platform)
             if args.list_file:
                 write_deps_tree_with_info_to_file(args.list_file, deps, python_version, sys_platform)
-        else:
-            if args.list:
-                print_deps_tree(deps)
-            if args.list_file:
-                write_deps_tree_to_file(args.list_file, deps)
     ignored_pkgs = []
     file_deps = None
     if args.check_missing or args.check_extra or args.raise_missing_error or args.raise_extra_error:
