@@ -128,7 +128,12 @@ def filter_deps_tree(deps, **kwargs):
     Returns:
     list: A filtered list of packages that match the specified criteria.
     """
-    return [pkg for pkg in deps if all(pkg.get(key) == val for key, val in kwargs.items())]
+    filtered = []
+    for pkg in deps:
+        is_matching = all(pkg[key] == value for key, value in kwargs.items())
+        if is_matching:
+            filtered.append(pkg)
+    return filtered
 
 
 def print_deps_tree(deps, indent=0):
