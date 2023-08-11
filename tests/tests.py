@@ -173,8 +173,8 @@ def test_print_deps_tree_with_info():
         }
     ]
     printed_lines = print_deps_tree_with_info_tester(deps, "3.11", "linux")
-    assert printed_lines[0] == "package1==1.0; python_version==3.11 and sys_platform==linux"
-    assert printed_lines[1] == "  package2==2.0; python_version==3.11 and sys_platform==linux"
+    assert printed_lines[0] == "package1 == 1.0; python_version == 3.11 and sys_platform == linux"
+    assert printed_lines[1] == "  package2 == 2.0; python_version == 3.11 and sys_platform == linux"
     assert len(printed_lines) == 3
 
 
@@ -224,8 +224,8 @@ def test_write_deps_tree_with_info_to_file():
     ]
     written_lines = write_deps_tree_with_info_to_file_tester(deps, "3.11", "linux")
     expected_lines = [
-        "package1==1.0; python_version==3.11 and sys_platform==linux\n",
-        "  package2==2.0; python_version==3.11 and sys_platform==linux\n"
+        "package1 == 1.0; python_version == 3.11 and sys_platform == linux\n",
+        "  package2 == 2.0; python_version == 3.11 and sys_platform == linux\n"
     ]
     assert written_lines == expected_lines
 
@@ -494,8 +494,8 @@ def test_main__check_missing_ignore():
     _pkg_install("ANIAnimator==0.2.2")
     with _pkg_file(["SIESTAstepper==2.1.0"]) as ignored:
         output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name}")
-        assert "SIESTAstepper==2.1.0" not in output
-        assert "ANIAnimator==0.2.2" in output
+        assert "SIESTAstepper == 2.1.0" not in output
+        assert "ANIAnimator == 0.2.2" in output
     _pkg_uninstall("SIESTAstepper==2.1.0")
     _pkg_uninstall("ANIAnimator==0.2.2")
 
@@ -507,8 +507,8 @@ def test_main__check_missing_ignore_packages():
     _pkg_install("SIESTAstepper==2.1.0")
     _pkg_install("ANIAnimator==0.2.2")
     output = main_tester("check_requirements -cm requirements.txt -ip SIESTAstepper==2.1.0")
-    assert "SIESTAstepper==2.1.0" not in output
-    assert "ANIAnimator==0.2.2" in output
+    assert "SIESTAstepper == 2.1.0" not in output
+    assert "ANIAnimator == 0.2.2" in output
     _pkg_uninstall("SIESTAstepper==2.1.0")
     _pkg_uninstall("ANIAnimator==0.2.2")
 
@@ -521,8 +521,8 @@ def test_main__check_missing_ignore__2():
     _pkg_install("fstring_to_format==0.1.2")
     with _pkg_file(["SIESTAstepper==2.1.0"]) as ignored:
         output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name}")
-        assert "SIESTAstepper==2.1.0" not in output
-        assert "fstring-to-format==0.1.2" in output
+        assert "SIESTAstepper == 2.1.0" not in output
+        assert "fstring-to-format == 0.1.2" in output
     _pkg_uninstall("SIESTAstepper==2.1.0")
     _pkg_uninstall("fstring_to_format==0.1.2")
 
@@ -534,8 +534,8 @@ def test_main__check_missing_ignore_packages__2():
     _pkg_install("SIESTAstepper==2.1.0")
     _pkg_install("fstring_to_format==0.1.2")
     output = main_tester("check_requirements -cm requirements.txt -ip SIESTAstepper==2.1.0")
-    assert "SIESTAstepper==2.1.0" not in output
-    assert "fstring-to-format==0.1.2" in output
+    assert "SIESTAstepper == 2.1.0" not in output
+    assert "fstring-to-format == 0.1.2" in output
     _pkg_uninstall("SIESTAstepper==2.1.0")
     _pkg_uninstall("fstring_to_format==0.1.2")
 
@@ -590,8 +590,8 @@ def test_main__raise_missing_error_ignore():
     with _pkg_file(["SIESTAstepper==2.1.0"]) as ignored:
         with case.assertRaises(ImportError):
             output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name} -rme")
-            assert "SIESTAstepper==2.1.0" not in output
-            assert "ANIAnimator==0.2.2" in output
+            assert "SIESTAstepper == 2.1.0" not in output
+            assert "ANIAnimator == 0.2.2" in output
     _pkg_uninstall("SIESTAstepper==2.1.0")
     _pkg_uninstall("ANIAnimator==0.2.2")
 
@@ -605,8 +605,8 @@ def test_main__raise_missing_error_ignore_packages():
     _pkg_install("ANIAnimator==0.2.2")
     with case.assertRaises(ImportError):
         output = main_tester("check_requirements -cm requirements.txt -ip SIESTAstepper==2.1.0 -rme")
-        assert "SIESTAstepper==2.1.0" not in output
-        assert "ANIAnimator==0.2.2" in output
+        assert "SIESTAstepper == 2.1.0" not in output
+        assert "ANIAnimator == 0.2.2" in output
     _pkg_uninstall("SIESTAstepper==2.1.0")
     _pkg_uninstall("ANIAnimator==0.2.2")
 

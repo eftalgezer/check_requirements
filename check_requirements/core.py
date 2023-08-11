@@ -142,12 +142,12 @@ def print_deps_tree(deps, indent=0):
             if key == "name":
                 print(val, end="")
             if key == "version" and val:
-                print(f"=={val}", end="")
+                print(f" == {val}", end="")
             if len(pkg.items()) > 3 and count > 2 and key != "deps":
                 if semicolon:
                     print(";", end=" ")
                     semicolon = False
-                print(f"{key}=={val}", end=" and " if count != len(pkg.items()) else "")
+                print(f"{key} == {val}", end=" and " if count != len(pkg.items()) else "")
         print("")
         print_deps_tree(pkg['deps'], indent + 1)
 
@@ -164,8 +164,8 @@ def print_deps_tree_with_info(deps, python_version, sys_platform, indent=0):
     """
     for pkg in deps:
         print("  " * indent, end="")
-        print(f"{pkg['name']}{'==' if pkg['version'] else ''}{pkg['version']};", end=" ")
-        print(f"python_version=={python_version} and sys_platform=={sys_platform}")
+        print(f"{pkg['name']}{' == ' if pkg['version'] else ''}{pkg['version']};", end=" ")
+        print(f"python_version == {python_version} and sys_platform == {sys_platform}")
         print_deps_tree_with_info(pkg['deps'], python_version, sys_platform, indent + 1)
 
 
@@ -268,5 +268,5 @@ def check_and_raise_error(deps_a, deps_b, ignored_pkgs):
     if missing_pkgs:
         err_msg = "Missing packages:\n"
         for pkg in missing_pkgs:
-            err_msg += f"{pkg['name']}{f'''=={pkg.get('version')}''' if pkg.get('version') else ''}\n"
+            err_msg += f"{pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}\n"
         raise ImportError(err_msg)
