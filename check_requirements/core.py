@@ -128,9 +128,7 @@ def filter_deps_tree(deps, **kwargs):
     Returns:
     list: A filtered list of packages that match the specified criteria.
     """
-    for key, val in kwargs.items():
-        deps = [pkg for pkg in deps if pkg.get(key) == val]
-    return deps
+    return [pkg for pkg in deps if all(pkg.get(key) == val for key, val in kwargs.items())]
 
 
 def print_deps_tree(deps, indent=0):
@@ -222,9 +220,12 @@ def is_pkg_in_subtree(pkg, deps):
     bool: True if the package exists in the subtree, False otherwise.
     """
     for dep_pkg in deps:
-        if (pkg["name"] == dep_pkg["name"]
-                and ((pkg.get("version") == dep_pkg.get("version"))
-                if pkg.get("version") and dep_pkg.get("version") else True)):
+        if (
+                pkg["name"] == dep_pkg["name"]
+                and (
+                (pkg.get("version") == dep_pkg.get("version"))
+                if pkg.get("version") and dep_pkg.get("version") else True)
+        ):
             return True
         if is_pkg_in_subtree(pkg, dep_pkg["deps"]):
             return True
