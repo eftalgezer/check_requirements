@@ -99,13 +99,12 @@ def main():
                         if val is not None and key in ["python_version", "sys_platform"]
                     }
                 )
-                print("kwargs_len", kwargs_len)
                 if kwargs_len == 2:
-                    deps = filter_deps_tree(deps, python_version=python_version, sys_platform=sys_platform)
+                    file_deps = filter_deps_tree(deps, python_version=python_version, sys_platform=sys_platform)
                 if kwargs_len == 1 and file_deps[0].get("python_version"):
-                    deps = filter_deps_tree(deps, python_version=python_version)
+                    file_deps = filter_deps_tree(deps, python_version=python_version)
                 if kwargs_len == 1 and file_deps[0].get("sys_platform"):
-                    deps = filter_deps_tree(deps, sys_platform=sys_platform)
+                    file_deps = filter_deps_tree(deps, sys_platform=sys_platform)
                 print("deps", deps)
         if args.ignore:
             with open(args.ignore, 'r', encoding="utf-8") as file:
