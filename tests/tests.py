@@ -11,8 +11,8 @@ from contextlib import suppress
 from unittest import TestCase
 from .helpers import _search_pattern, _read_file, _pkg_install, _pkg_uninstall, _dummy_pkg_file, _pkg_file
 from .testers import get_list_tester, parse_deps_tree_tester, add_info_tester, filter_deps_tree_tester, \
-    print_deps_tree_tester, print_deps_tree_with_info_tester, write_deps_tree_to_file_tester,\
-    write_deps_tree_with_info_to_file_tester, is_pkg_in_subtree_tester, find_missing_pkgs_tester,\
+    print_deps_tree_tester, print_deps_tree_with_info_tester, write_deps_tree_to_file_tester, \
+    write_deps_tree_with_info_to_file_tester, is_pkg_in_subtree_tester, find_missing_pkgs_tester, \
     check_and_raise_error_tester, main_tester
 
 
@@ -20,7 +20,7 @@ def test_get_list():
     """
     Test if the get_list function correctly lists dependencies.
     """
-    assert _search_pattern(get_list_tester(), r"([^\s]+)==[^\n]+", re.DOTALL)
+    assert _search_pattern(get_list_tester(), r"([^\s]+) == [^\n]+", re.DOTALL)
 
 
 def test_parse_deps_tree():
@@ -441,7 +441,7 @@ def test_main__list():
     """
     Test listing dependencies to the console using the main script.
     """
-    assert _search_pattern(main_tester("check_requirements -l"), r"([^\s]+)==[^\n]+", re.DOTALL)
+    assert _search_pattern(main_tester("check_requirements -l"), r"([^\s]+) == [^\n]+", re.DOTALL)
 
 
 def test_main__list_with_info():
@@ -450,7 +450,7 @@ def test_main__list_with_info():
     """
     assert _search_pattern(
         main_tester("check_requirements -l -wi"),
-        r"([\w-]+)==[\d.]+; python_version==\d\.\d{1,2} and sys_platform==\w+",
+        r"([\w-]+) == [\d.]+; python_version == \d\.\d{1,2} and sys_platform == \w+",
         0
     )
 
@@ -460,7 +460,7 @@ def test_main__list_file():
     Test saving dependencies to a file using the main script.
     """
     main_tester("check_requirements -lf output.txt")
-    assert _search_pattern(_read_file("output.txt"), r"([^\s]+)==[^\n]+", re.DOTALL)
+    assert _search_pattern(_read_file("output.txt"), r"([^\s]+) == [^\n]+", re.DOTALL)
     os.remove("output.txt")
 
 
@@ -471,7 +471,7 @@ def test_main__list_file_with_info():
     main_tester("check_requirements -lf output.txt --wi")
     assert _search_pattern(
         _read_file("output.txt"),
-        r"([\w-]+)==[\d.]+; python_version==\d\.\d{1,2} and sys_platform==\w+",
+        r"([\w-]+) == [\d.]+; python_version == \d\.\d{1,2} and sys_platform == \w+",
         0
     )
     os.remove("output.txt")

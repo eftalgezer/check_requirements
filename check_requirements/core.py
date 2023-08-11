@@ -53,7 +53,8 @@ def parse_deps_tree(lines):
     deps = []
     stack = []
     lines = lines.split("\n")
-    lines.pop(-1)
+    if lines[-1].strip() == "":
+        lines.pop(-1)
     for line in lines:
         indent = line.count("  ")
         info = line.split(";")
