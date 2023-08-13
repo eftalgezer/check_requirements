@@ -72,12 +72,13 @@ def main():
     parser.add_argument("--ignore-packages", "-ip", nargs="+", help="List of packages to ignore")
     parser.add_argument("--with-info", "-wi", action="store_true", help="Include Python version and OS info")
     args = parser.parse_args()
-    python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
-    sys_platform = sys.platform.lower()
+    sys_info = {
+        "python_version": f"{sys.version_info.major}.{sys.version_info.minor}",
+        "sys_platform": sys.platform.lower()
+    }
     deps = parse_deps_tree(get_list())
     ignored_pkgs = []
     file_deps = None
-    print(python_version, sys_platform)
     if args.list or args.list_file:
         if args.list:
             print_deps_tree(deps)
@@ -86,9 +87,9 @@ def main():
         if args.with_info:
             deps = add_info(deps)
             if args.list:
-                print_deps_tree_with_info(deps, python_version, sys_platform)
+                print_deps_tree_with_info(deps, **{sys_info})
             if args.list_file:
-                write_deps_tree_with_info_to_file(args.list_file, deps, python_version, sys_platform)
+                write_deps_tree_with_info_to_file(args.list_file, deps, **{sys_info})
     if args.check_missing or args.check_extra or args.raise_missing_error or args.raise_extra_error:
         dep_file = [check for check in [args.check_missing, args.check_extra] if check][0]
         if dep_file:
@@ -98,15 +99,11 @@ def main():
                 kwargs_len = len(
                     {
                         key: val for key, val in file_deps[0].items()
-                        if val is not None and key in ["python_version", "sys_platform"]
+                        if val is not None and key not in ["name", "at", "version", "deps"]
                     }
                 )
-                if kwargs_len == 2:
-                    file_deps = filter_deps_tree(deps, python_version=python_version, sys_platform=sys_platform)
-                if kwargs_len == 1 and file_deps[0].get("python_version"):
-                    file_deps = filter_deps_tree(deps, python_version=python_version)
-                if kwargs_len == 1 and file_deps[0].get("sys_platform"):
-                    file_deps = filter_deps_tree(deps, sys_platform=sys_platform)
+                if kwargs_len:
+                    file_deps = filter_deps_tree(deps, **{sys_info})
                 print("deps", file_deps)
         if args.ignore:
             with open(args.ignore, 'r', encoding="utf-8") as file:
