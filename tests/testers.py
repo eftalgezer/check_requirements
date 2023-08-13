@@ -30,11 +30,11 @@ def parse_deps_tree_tester(lines):
     return parse_deps_tree(lines)
 
 
-def add_info_tester(deps):
+def add_info_tester(deps, **kwargs):
     """
     Tester function for add_info. Simulates adding Python version and system platform information to dependencies.
     """
-    return add_info(deps)
+    return add_info(deps, **kwargs)
 
 
 def filter_deps_tree_tester(deps, **kwargs):
@@ -58,11 +58,11 @@ def print_deps_tree_tester(deps):
     return _capture_stdout(print_deps_tree, deps).split('\n')
 
 
-def print_deps_tree_with_info_tester(deps, python_version, sys_platform):
+def print_deps_tree_with_info_tester(deps, **kwargs):
     """
     Tester function for print_deps_tree_with_info. Simulates printing the dependency tree structure with added info.
     """
-    return _capture_stdout(print_deps_tree_with_info, deps, python_version, sys_platform).split('\n')
+    return _capture_stdout(print_deps_tree_with_info, deps, **kwargs).split('\n')
 
 
 def write_deps_tree_to_file_tester(deps):

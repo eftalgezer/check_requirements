@@ -52,7 +52,6 @@ def parse_deps_tree(lines):
     if lines[-1].strip() == "":
         lines.pop(-1)
     for line in lines:
-        pkg_data = {}
         indent = line.count("  ")
         info = line.split(";")
         pkg_info = info[0].strip().split("==")
@@ -70,7 +69,7 @@ def parse_deps_tree(lines):
         while len(stack) > indent:
             stack.pop()
         parent = stack[-1] if stack else None
-        pkg_data["name"] = pkg_name
+        pkg_data = {"name": pkg_name}
         if pkg_version:
             pkg_data["version"] = pkg_version
         if pkg_at:

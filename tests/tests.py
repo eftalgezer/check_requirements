@@ -7,6 +7,7 @@ or extra packages, ignoring packages, and raising errors for missing or extra de
 
 import os
 import re
+import sys
 from contextlib import suppress
 from unittest import TestCase
 from .helpers import _search_pattern, _read_file, _pkg_install, _pkg_uninstall, _dummy_pkg_file, _pkg_file
@@ -52,10 +53,11 @@ def test_add_info():
             ]
         }
     ]
-    deps_with_info = add_info_tester(deps)
+    deps_with_info = add_info_tester(deps, python_version=f"{sys.version_info.major}.{sys.version_info.minor}",
+                                     sys_platform=sys.platform.lower())
     assert isinstance(deps_with_info, list)
-    assert deps_with_info[0]["python_version"] is not None
-    assert deps_with_info[0]["sys_platform"] is not None
+    assert deps_with_info[0]["python_version"] == f"{sys.version_info.major}.{sys.version_info.minor}"
+    assert deps_with_info[0]["sys_platform"] == sys.platform.lower()
 
 
 def test_filter_deps_tree():
@@ -172,9 +174,17 @@ def test_print_deps_tree_with_info():
             ]
         }
     ]
-    printed_lines = print_deps_tree_with_info_tester(deps, "3.11", "linux")
-    assert printed_lines[0] == "package1 == 1.0; python_version == 3.11 and sys_platform == linux"
-    assert printed_lines[1] == "  package2 == 2.0; python_version == 3.11 and sys_platform == linux"
+    printed_lines = print_deps_tree_with_info_tester(
+        deps,
+        python_version=f"{sys.version_info.major}.{sys.version_info.minor}",
+        sys_platform=sys.platform
+    )
+    assert printed_lines[0] == f"package1 == 1.0; "\
+                               f"python_version == {sys.version_info.major}.{sys.version_info.minor} and "\
+                               f"sys_platform == {sys.platform}"
+    assert printed_lines[1] == f"  package2 == 2.0; "\
+                               f"python_version == {sys.version_info.major}.{sys.version_info.minor} and "\
+                               f"sys_platform == {sys.platform}"
     assert len(printed_lines) == 3
 
 
