@@ -87,9 +87,9 @@ def main():
         if args.with_info:
             deps = add_info(deps)
             if args.list:
-                print_deps_tree_with_info(deps, **{sys_info})
+                print_deps_tree_with_info(deps, **sys_info)
             if args.list_file:
-                write_deps_tree_with_info_to_file(args.list_file, deps, **{sys_info})
+                write_deps_tree_with_info_to_file(args.list_file, deps, **sys_info)
     if args.check_missing or args.check_extra or args.raise_missing_error or args.raise_extra_error:
         dep_file = [check for check in [args.check_missing, args.check_extra] if check][0]
         if dep_file:
@@ -103,7 +103,7 @@ def main():
                     }
                 )
                 if kwargs_len:
-                    file_deps = filter_deps_tree(deps, **{sys_info})
+                    file_deps = filter_deps_tree(deps, **sys_info)
                 print("deps", file_deps)
         if args.ignore:
             with open(args.ignore, 'r', encoding="utf-8") as file:
