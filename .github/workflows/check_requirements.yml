@@ -2,10 +2,9 @@ name: Check requirements
 on:
   workflow_run:
     workflows: ["Python package"]
-  push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    types: 
+        - completed
 
 permissions:
   contents: read
