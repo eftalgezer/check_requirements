@@ -112,6 +112,7 @@ def main():
     if args.check_missing:
         deps = add_info(deps, **sys_info)
         missing_pkgs = find_missing_pkgs(deps, file_deps, ignored_pkgs)
+        print("missing_pkgs", missing_pkgs)
         for pkg in missing_pkgs:
             print(f"Missing: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
     if args.check_extra:
