@@ -42,7 +42,7 @@ def test_add_info():
     """
     deps = [
         {
-            "ame": "package1",
+            "name": "package1",
             "version": "1.0",
             "deps": [
                 {
