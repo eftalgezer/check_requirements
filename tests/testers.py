@@ -78,14 +78,14 @@ def write_deps_tree_to_file_tester(deps):
     return written_lines
 
 
-def write_deps_tree_with_info_to_file_tester(deps, python_version, sys_platform):
+def write_deps_tree_with_info_to_file_tester(deps, **kwargs):
     """
     Tester function for write_deps_tree_with_info_to_file. Simulates writing the dependency tree with added info to a
     file.
     """
     written_lines = None
     with NamedTemporaryFile(delete=False) as temp_file:
-        write_deps_tree_with_info_to_file(temp_file.name, deps, python_version, sys_platform)
+        write_deps_tree_with_info_to_file(temp_file.name, deps, **kwargs)
         with open(temp_file.name, 'r') as f:
             written_lines = f.readlines()
     os.remove(temp_file.name)
