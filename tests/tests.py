@@ -56,7 +56,7 @@ def test_add_info():
             ]
         }
     ]
-    deps_with_info = add_info_tester(deps, python_version=PYTHON_VERSION)
+    deps_with_info = add_info_tester(deps, python_version=PYTHON_VERSION, sys_platform=sys.platform)
     assert isinstance(deps_with_info, list)
     assert deps_with_info[0]["python_version"] == PYTHON_VERSION
     assert deps_with_info[0]["sys_platform"] == sys.platform
@@ -468,7 +468,7 @@ def test_main__list_with_info():
     """
     assert _search_pattern(
         main_tester("check_requirements -l -wi python_version sys_platform"),
-        r"([\w-]+) == [\d.]+; python_version == \d\.\d{1,2} and sys_platform == \w+",
+        r"([\w-]+) == [\d.]+; sys_platform == \w+ and python_version == \d\.\d{1,2}",
         0
     )
 
@@ -489,7 +489,7 @@ def test_main__list_file_with_info():
     main_tester("check_requirements -lf output.txt -wi python_version sys_platform")
     assert _search_pattern(
         _read_file("output.txt"),
-        r"([\w-]+) == [\d.]+; python_version == \d\.\d{1,2} and sys_platform == \w+",
+        r"([\w-]+) == [\d.]+;sys_platform == \w+ and python_version == \d\.\d{1,2}",
         0
     )
     os.remove("output.txt")
