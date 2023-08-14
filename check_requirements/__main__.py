@@ -101,8 +101,11 @@ def main():
                         if val is not None and key not in ["name", "at", "version", "deps"]
                     }
                 )
+                print("kwargs_len", kwargs_len)
                 if kwargs_len:
-                    file_deps = filter_deps_tree(deps, **sys_info)
+                    print("len(file_deps)", len(file_deps))
+                    file_deps = filter_deps_tree(file_deps, **sys_info)
+                    print("len(file_deps)", len(file_deps))
         if args.ignore:
             with open(args.ignore, 'r', encoding="utf-8") as file:
                 ignore_lines = file.read()
@@ -110,9 +113,9 @@ def main():
         elif args.ignore_packages:
             ignored_pkgs = parse_deps_tree(f"{chr(10).join(args.ignore_packages)}\n")
     if args.check_missing:
+        print("len(deps)", len(deps))
         deps = add_info(deps, **sys_info)
-        print("deps", deps)
-        print("file_deps", file_deps)
+        print("len(deps)", len(deps))
         missing_pkgs = find_missing_pkgs(deps, file_deps, ignored_pkgs)
         for pkg in missing_pkgs:
             print(f"Missing: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
