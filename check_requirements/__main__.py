@@ -95,7 +95,6 @@ def main():
         if dep_file:
             with open(dep_file, "r", encoding="utf-8") as file:
                 file_deps = parse_deps_tree(file.read())
-                print("file_deps", file_deps)
                 kwargs_len = len(
                     {
                         key: val for key, val in file_deps[0].items()
@@ -104,7 +103,6 @@ def main():
                 )
                 if kwargs_len:
                     file_deps = filter_deps_tree(deps, **sys_info)
-                print("deps", file_deps)
         if args.ignore:
             with open(args.ignore, 'r', encoding="utf-8") as file:
                 ignore_lines = file.read()

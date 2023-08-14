@@ -3,18 +3,23 @@ Dependency Management Functions
 
 This module provides functions for managing and analyzing Python package dependencies.
 
-Functions: - get_list(): Returns a list of installed packages and their dependencies as text. - parse_deps_tree(
-lines: str): Parses the dependency tree from lines and returns a hierarchical dictionary. - add_info(deps: dict):
-Adds Python version and system platform information to the dependency tree. - filter_deps_tree(deps, **kwargs):
-Filters the dependency tree based on provided keyword arguments. - print_deps_tree(deps: dict, indent: int = 0):
-Prints the dependency tree to the console. - print_deps_tree_with_info(deps: dict, indent: int = 0, **kwargs): Prints
-the dependency tree with version and platform info to the console. - write_deps_tree_to_file(file_path: str,
-deps: dict, indent: int = 0): Writes the dependency tree to a file. - write_deps_tree_with_info_to_file(file_path:
-str, deps: dict, indent: int = 0, **kwargs): Writes the dependency tree with info to a file. - is_pkg_in_subtree(pkg:
-dict, deps: dict): Checks if a package exists in a dependency subtree. - find_missing_pkgs(deps_a: dict,
-deps_b: dict, ignored_pkgs: list): Finds missing packages in deps_a compared to deps_b, ignoring specified packages.
+Functions:
+ - get_list(): Returns a list of installed packages and their dependencies as text.
+ - parse_deps_tree(lines: str): Parses the dependency tree from lines and returns a hierarchical dictionary.
+ - add_info(deps: dict): Adds Python version and system platform information to the dependency tree.
+ - filter_deps_tree(deps, **kwargs): Filters the dependency tree based on provided keyword arguments.
+ - print_deps_tree(deps: dict, indent: int = 0): Prints the dependency tree to the console.
+ - print_deps_tree_with_info(deps: dict, indent: int = 0, **kwargs): Prints the dependency tree with version and
+ platform info to the console.
+ - write_deps_tree_to_file(file_path: str, deps: dict, indent: int = 0): Writes the dependency tree to a file.
+ - write_deps_tree_with_info_to_file(file_path: str, deps: dict, indent: int = 0, **kwargs): Writes the dependency tree
+ with info to a file.
+ - is_pkg_in_subtree(pkg: dict, deps: dict): Checks if a package exists in a dependency subtree.
+ - find_missing_pkgs(deps_a: dict, deps_b: dict, ignored_pkgs: list): Finds missing packages in deps_a compared to
+ deps_b, ignoring specified packages.
 - check_and_raise_error(deps_a: dict, deps_b: dict, ignored_pkgs: list): Raises ImportError if missing packages are
-found in deps_a compared to deps_b, ignoring specified packages."""
+found in deps_a compared to deps_b, ignoring specified packages.
+"""
 
 import sys
 from subprocess import Popen, PIPE
@@ -91,7 +96,7 @@ def parse_deps_tree(lines):
 
 def add_info(deps, **kwargs):
     """
-    Adds Python version and system platform information to the dependency tree.
+    Adds given system information to the dependency tree.
 
     Args:
     deps (dict): A hierarchical dictionary representing the dependency tree.
@@ -160,7 +165,7 @@ def print_deps_tree(deps, indent=0):
 
 def print_deps_tree_with_info(deps, indent=0, **kwargs):
     """
-    Prints the dependency tree with version and platform info to the console.
+    Prints the dependency tree with given system information to the console.
 
     Args:
     deps (dict): A hierarchical dictionary representing the dependency tree.
@@ -193,7 +198,7 @@ def write_deps_tree_to_file(file_path, deps):
 
 def write_deps_tree_with_info_to_file(file_path, deps, **kwargs):
     """
-    Writes the dependency tree with version and platform info to a file.
+    Writes the dependency tree with given system information to a file.
 
     Args:
     file_path (str): Path to the output file.
