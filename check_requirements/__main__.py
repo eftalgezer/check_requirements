@@ -85,7 +85,7 @@ def main():
         if args.list_file:
             write_deps_tree_to_file(args.list_file, deps)
         if args.with_info:
-            deps = add_info(deps)
+            deps = add_info(deps, **sys_info)
             if args.list:
                 print_deps_tree_with_info(deps, **sys_info)
             if args.list_file:
@@ -112,20 +112,20 @@ def main():
         elif args.ignore_packages:
             ignored_pkgs = parse_deps_tree(f"{chr(10).join(args.ignore_packages)}\n")
     if args.check_missing:
-        deps = add_info(deps)
+        deps = add_info(deps, **sys_info)
         missing_pkgs = find_missing_pkgs(deps, file_deps, ignored_pkgs)
         for pkg in missing_pkgs:
             print(f"Missing: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
     if args.check_extra:
-        deps = add_info(deps)
+        deps = add_info(deps, **sys_info)
         extra_pkgs = find_missing_pkgs(file_deps, deps, ignored_pkgs)
         for pkg in extra_pkgs:
             print(f"Extra: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
     if args.raise_missing_error and args.check_missing:
-        deps = add_info(deps)
+        deps = add_info(deps, **sys_info)
         check_and_raise_error(deps, file_deps, ignored_pkgs)
     if args.raise_extra_error and args.check_extra:
-        deps = add_info(deps)
+        deps = add_info(deps, **sys_info)
         check_and_raise_error(file_deps, deps, ignored_pkgs)
 
 

@@ -170,7 +170,7 @@ def print_deps_tree_with_info(deps, indent=0, **kwargs):
         for count, (key, val) in enumerate(kwargs.items(), start=1):
             if key not in ["name", "at", "version", "deps"] and val:
                 print(f"{key} == {val}", end=" and " if count != len(pkg.items()) else "")
-        print_deps_tree_with_info(pkg['deps'], indent + 1, **{kwargs})
+        print_deps_tree_with_info(pkg['deps'], indent + 1, **kwargs)
 
 
 def write_deps_tree_to_file(file_path, deps):
@@ -199,7 +199,7 @@ def write_deps_tree_with_info_to_file(file_path, deps, **kwargs):
     """
     original_stdout = sys.stdout
     sys.stdout = open(file_path, "w", encoding="utf-8")
-    print_deps_tree_with_info(deps, **{kwargs})
+    print_deps_tree_with_info(deps, **kwargs)
     sys.stdout.close()
     sys.stdout = original_stdout
 
