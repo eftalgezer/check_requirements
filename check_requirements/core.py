@@ -152,12 +152,11 @@ def print_deps_tree(deps, indent=0):
                 print(f" @ {val}", end="")
             if key == "version" and val:
                 print(f" == {val}", end="")
-            if key not in ["name", "at", "version", "deps"]:
+            if key not in ["name", "at", "version", "deps"] and val:
                 if semicolon:
                     print(";", end=" ")
                     semicolon = False
-                if val:
-                    print(f"{key} == {val}", end=" and " if count != len(pkg.items()) else "")
+                print(f"{key} == {val}", end=" and " if count != len(pkg.items()) else "")
         print("")
         print_deps_tree(pkg['deps'], indent + 1)
 
