@@ -12,8 +12,7 @@ from unittest.mock import patch
 import pytest
 from .helpers import _capture_stdout
 from check_requirements import get_list, parse_deps_tree, add_info, filter_deps_tree, print_deps_tree, \
-    print_deps_tree_with_info, write_deps_tree_to_file, write_deps_tree_with_info_to_file, is_pkg_in_subtree,\
-    find_missing_pkgs, check_and_raise_error
+    write_deps_tree_to_file, is_pkg_in_subtree, find_missing_pkgs, check_and_raise_error
 
 
 def get_list_tester():
@@ -58,13 +57,6 @@ def print_deps_tree_tester(deps):
     return _capture_stdout(print_deps_tree, deps).split('\n')
 
 
-def print_deps_tree_with_info_tester(deps, **kwargs):
-    """
-    Tester function for print_deps_tree_with_info. Simulates printing the dependency tree structure with added info.
-    """
-    return _capture_stdout(print_deps_tree_with_info, deps, **kwargs).split('\n')
-
-
 def write_deps_tree_to_file_tester(deps):
     """
     Tester function for write_deps_tree_to_file. Simulates writing the dependency tree to a file.
@@ -72,20 +64,6 @@ def write_deps_tree_to_file_tester(deps):
     written_lines = None
     with NamedTemporaryFile(delete=False) as temp_file:
         write_deps_tree_to_file(temp_file.name, deps)
-        with open(temp_file.name, 'r') as f:
-            written_lines = f.readlines()
-    os.remove(temp_file.name)
-    return written_lines
-
-
-def write_deps_tree_with_info_to_file_tester(deps, **kwargs):
-    """
-    Tester function for write_deps_tree_with_info_to_file. Simulates writing the dependency tree with added info to a
-    file.
-    """
-    written_lines = None
-    with NamedTemporaryFile(delete=False) as temp_file:
-        write_deps_tree_with_info_to_file(temp_file.name, deps, **kwargs)
         with open(temp_file.name, 'r') as f:
             written_lines = f.readlines()
     os.remove(temp_file.name)

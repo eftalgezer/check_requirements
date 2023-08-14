@@ -9,11 +9,7 @@ Functions:
  - add_info(deps: dict): Adds Python version and system platform information to the dependency tree.
  - filter_deps_tree(deps, **kwargs): Filters the dependency tree based on provided keyword arguments.
  - print_deps_tree(deps: dict, indent: int = 0): Prints the dependency tree to the console.
- - print_deps_tree_with_info(deps: dict, indent: int = 0, **kwargs): Prints the dependency tree with version and
- platform info to the console.
  - write_deps_tree_to_file(file_path: str, deps: dict, indent: int = 0): Writes the dependency tree to a file.
- - write_deps_tree_with_info_to_file(file_path: str, deps: dict, indent: int = 0, **kwargs): Writes the dependency tree
- with info to a file.
  - is_pkg_in_subtree(pkg: dict, deps: dict): Checks if a package exists in a dependency subtree.
  - find_missing_pkgs(deps_a: dict, deps_b: dict, ignored_pkgs: list): Finds missing packages in deps_a compared to
  deps_b, ignoring specified packages.
@@ -163,27 +159,6 @@ def print_deps_tree(deps, indent=0):
                 print_deps_tree(pkg["deps"], indent + 1)
 
 
-def print_deps_tree_with_info(deps, indent=0, **kwargs):
-    """
-    Prints the dependency tree with given system information to the console.
-
-    Args:
-    deps (dict): A hierarchical dictionary representing the dependency tree.
-    **kwargs: System information.
-    indent (int, optional): Indentation level for formatting. Defaults to 0.
-    """
-    for pkg in deps:
-        print("  " * indent, end="")
-        print(f"{pkg['name']}", end="")
-        print(f" @ {pkg.get('at')}" if pkg.get('at') else "", end="")
-        print(f"{f''' == {pkg.get('version')}''' if pkg.get('version') else ''};", end=" ")
-        for count, (key, val) in enumerate(kwargs.items(), start=1):
-            if key not in ["name", "at", "version", "deps"] and val:
-                print(f"{key} == {val}", end=" and " if count != len(kwargs.items()) else "")
-        print("")
-        print_deps_tree_with_info(pkg['deps'], indent + 1, **kwargs)
-
-
 def write_deps_tree_to_file(file_path, deps):
     """
     Writes the dependency tree to a file.
@@ -195,22 +170,6 @@ def write_deps_tree_to_file(file_path, deps):
     original_stdout = sys.stdout
     sys.stdout = open(file_path, "w", encoding="utf-8")
     print_deps_tree(deps)
-    sys.stdout.close()
-    sys.stdout = original_stdout
-
-
-def write_deps_tree_with_info_to_file(file_path, deps, **kwargs):
-    """
-    Writes the dependency tree with given system information to a file.
-
-    Args:
-    file_path (str): Path to the output file.
-    deps (dict): A hierarchical dictionary representing the dependency tree.
-    **kwargs: System information.
-    """
-    original_stdout = sys.stdout
-    sys.stdout = open(file_path, "w", encoding="utf-8")
-    print_deps_tree_with_info(deps, **kwargs)
     sys.stdout.close()
     sys.stdout = original_stdout
 

@@ -13,8 +13,7 @@ from contextlib import suppress
 from unittest import TestCase
 from .helpers import _search_pattern, _read_file, _pkg_install, _pkg_uninstall, _dummy_pkg_file, _pkg_file
 from .testers import get_list_tester, parse_deps_tree_tester, add_info_tester, filter_deps_tree_tester, \
-    print_deps_tree_tester, print_deps_tree_with_info_tester, write_deps_tree_to_file_tester, \
-    write_deps_tree_with_info_to_file_tester, is_pkg_in_subtree_tester, find_missing_pkgs_tester, \
+    print_deps_tree_tester, write_deps_tree_to_file_tester, is_pkg_in_subtree_tester, find_missing_pkgs_tester, \
     check_and_raise_error_tester, main_tester
 
 PYTHON_VERSION = ".".join(platform.python_version_tuple()[:2])
@@ -156,13 +155,6 @@ def test_print_deps_tree():
     assert printed_lines[0] == "package1 == 1.0"
     assert printed_lines[1] == "  package2 == 2.0"
     assert len(printed_lines) == 3
-
-
-def test_print_deps_tree_with_info():
-    """
-    Test if the print_deps_tree_with_info function correctly prints the dependency tree structure
-    with additional information.
-    """
     deps = [
         {
             "name": "package1",
@@ -176,11 +168,10 @@ def test_print_deps_tree_with_info():
             ]
         }
     ]
-    printed_lines = print_deps_tree_with_info_tester(
-        deps,
-        python_version=PYTHON_VERSION,
-        sys_platform=sys.platform
-    )
+    deps = add_info_tester(deps, python_version=PYTHON_VERSION, sys_platform=sys.platform)
+    assert deps["python_version"] == PYTHON_VERSION
+    assert deps["sys_platform"] == sys.platform
+    printed_lines = print_deps_tree_tester(deps)
     assert printed_lines[0] == f"package1 == 1.0; "\
                                f"python_version == {PYTHON_VERSION} and "\
                                f"sys_platform == {sys.platform}"
@@ -214,13 +205,6 @@ def test_write_deps_tree_to_file():
         "  package2 == 2.0\n"
     ]
     assert written_lines == expected_lines
-
-
-def test_write_deps_tree_with_info_to_file():
-    """
-    Test if the write_deps_tree_with_info_to_file function correctly writes the dependency tree with added
-    info to a file.
-    """
     deps = [
         {
             "name": "package1",
@@ -234,11 +218,10 @@ def test_write_deps_tree_with_info_to_file():
             ]
         }
     ]
-    written_lines = write_deps_tree_with_info_to_file_tester(
-        deps,
-        python_version=PYTHON_VERSION,
-        sys_platform=sys.platform
-    )
+    deps = add_info_tester(deps, python_version=PYTHON_VERSION, sys_platform=sys.platform)
+    assert deps["python_version"] == PYTHON_VERSION
+    assert deps["sys_platform"] == sys.platform
+    written_lines = write_deps_tree_to_file_tester(deps)
     expected_lines = [
         f"package1 == 1.0; python_version == {PYTHON_VERSION}"
         f" and sys_platform == {sys.platform}\n",

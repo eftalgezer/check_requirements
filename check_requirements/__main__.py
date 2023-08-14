@@ -50,9 +50,8 @@ import os
 import sys
 import platform
 import argparse
-from .core import get_list, parse_deps_tree, add_info, filter_deps_tree, print_deps_tree, print_deps_tree_with_info, \
-    write_deps_tree_to_file, write_deps_tree_with_info_to_file, find_missing_pkgs, \
-    check_and_raise_error, format_full_version
+from .core import get_list, parse_deps_tree, add_info, filter_deps_tree, print_deps_tree, write_deps_tree_to_file, \
+    find_missing_pkgs, check_and_raise_error, format_full_version
 
 
 def main():
@@ -87,7 +86,6 @@ def main():
         "implementation_name": sys.implementation.name,
         "implementation_version": format_full_version()
     }
-    sys_info_req = None
     deps = parse_deps_tree(get_list())
     ignored_pkgs = []
     file_deps = None
@@ -98,10 +96,6 @@ def main():
         print_deps_tree(deps)
     if args.list_file:
         write_deps_tree_to_file(args.list_file, deps)
-    if args.list and args.with_info:
-        print_deps_tree_with_info(deps, **sys_info_req)
-    if args.list_file and args.with_info:
-        write_deps_tree_with_info_to_file(args.list_file, deps, **sys_info_req)
     if args.check_missing or args.check_extra or args.raise_missing_error or args.raise_extra_error:
         dep_file = [check for check in [args.check_missing, args.check_extra] if check][0]
         if dep_file:
