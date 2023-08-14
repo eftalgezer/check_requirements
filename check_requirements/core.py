@@ -288,3 +288,13 @@ def check_and_raise_error(deps_a, deps_b, ignored_pkgs=None):
         for pkg in missing_pkgs:
             err_msg += f"{pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}\n"
         raise ImportError(err_msg)
+
+
+def format_full_version():
+    if hasattr(sys, 'implementation'):
+        version = '{0.major}.{0.minor}.{0.micro}'.format(sys.implementation.version)
+        kind = sys.implementation.version.releaselevel
+        if kind != 'final':
+            version += kind[0] + str(sys.implementation.version.serial)
+        return version
+    return "0"

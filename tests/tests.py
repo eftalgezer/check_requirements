@@ -6,8 +6,9 @@ or extra packages, ignoring packages, and raising errors for missing or extra de
 """
 
 import os
-import re
 import sys
+import platform
+import re
 from contextlib import suppress
 from unittest import TestCase
 from .helpers import _search_pattern, _read_file, _pkg_install, _pkg_uninstall, _dummy_pkg_file, _pkg_file
@@ -15,6 +16,8 @@ from .testers import get_list_tester, parse_deps_tree_tester, add_info_tester, f
     print_deps_tree_tester, print_deps_tree_with_info_tester, write_deps_tree_to_file_tester, \
     write_deps_tree_with_info_to_file_tester, is_pkg_in_subtree_tester, find_missing_pkgs_tester, \
     check_and_raise_error_tester, main_tester
+
+PYTHON_VERSION = ".".join(platform.python_version_tuple()[:2])
 
 
 def test_get_list():
@@ -53,11 +56,10 @@ def test_add_info():
             ]
         }
     ]
-    deps_with_info = add_info_tester(deps, python_version=f"{sys.version_info.major}.{sys.version_info.minor}",
-                                     sys_platform=sys.platform.lower())
+    deps_with_info = add_info_tester(deps, python_version=PYTHON_VERSION)
     assert isinstance(deps_with_info, list)
-    assert deps_with_info[0]["python_version"] == f"{sys.version_info.major}.{sys.version_info.minor}"
-    assert deps_with_info[0]["sys_platform"] == sys.platform.lower()
+    assert deps_with_info[0]["python_version"] == PYTHON_VERSION
+    assert deps_with_info[0]["sys_platform"] == sys.platform
 
 
 def test_filter_deps_tree():
@@ -176,14 +178,14 @@ def test_print_deps_tree_with_info():
     ]
     printed_lines = print_deps_tree_with_info_tester(
         deps,
-        python_version=f"{sys.version_info.major}.{sys.version_info.minor}",
+        python_version=PYTHON_VERSION,
         sys_platform=sys.platform
     )
     assert printed_lines[0] == f"package1 == 1.0; "\
-                               f"python_version == {sys.version_info.major}.{sys.version_info.minor} and "\
+                               f"python_version == {PYTHON_VERSION} and "\
                                f"sys_platform == {sys.platform}"
     assert printed_lines[1] == f"  package2 == 2.0; "\
-                               f"python_version == {sys.version_info.major}.{sys.version_info.minor} and "\
+                               f"python_version == {PYTHON_VERSION} and "\
                                f"sys_platform == {sys.platform}"
     assert len(printed_lines) == 3
 
@@ -234,14 +236,14 @@ def test_write_deps_tree_with_info_to_file():
     ]
     written_lines = write_deps_tree_with_info_to_file_tester(
         deps,
-        python_version=f"{sys.version_info.major}.{sys.version_info.minor}",
-        sys_platform=sys.platform.lower()
+        python_version=PYTHON_VERSION,
+        sys_platform=sys.platform
     )
     expected_lines = [
-        f"package1 == 1.0; python_version == {sys.version_info.major}.{sys.version_info.minor}"
-        f" and sys_platform == {sys.platform.lower()}\n",
-        f"  package2 == 2.0; python_version == {sys.version_info.major}.{sys.version_info.minor}"
-        f" and sys_platform == {sys.platform.lower()}\n"
+        f"package1 == 1.0; python_version == {PYTHON_VERSION}"
+        f" and sys_platform == {sys.platform}\n",
+        f"  package2 == 2.0; python_version == {PYTHON_VERSION}"
+        f" and sys_platform == {sys.platform}\n"
     ]
     assert written_lines == expected_lines
 
@@ -448,7 +450,7 @@ def test_main__help():
                       "        Check for extra dependencies and raise error\n  --ignore IGNORE, -i IGNORE\n          " \
                       "              File containing ignored packages\n  --ignore-packages IGNORE_PACKAGES [" \
                       "IGNORE_PACKAGES ...], -ip IGNORE_PACKAGES [IGNORE_PACKAGES ...]\n                        List " \
-                      "of packages to ignore\n  --with-info, -wi      Include Python version and OS info\n"
+                      "of packages to ignore\n  --with-info, -wi      Include requested system information\n"
     with suppress(SystemExit):
         assert expected_output == main_tester("check_requirements -h")
 

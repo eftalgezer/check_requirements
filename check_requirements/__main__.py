@@ -46,11 +46,13 @@ Examples:
     check_dependencies --raise-extra-error extra_deps.txt
 """
 
+import os
 import sys
+import platform
 import argparse
 from .core import get_list, parse_deps_tree, add_info, filter_deps_tree, print_deps_tree, print_deps_tree_with_info, \
     write_deps_tree_to_file, write_deps_tree_with_info_to_file, find_missing_pkgs, \
-    check_and_raise_error
+    check_and_raise_error, format_full_version
 
 
 def main():
@@ -70,26 +72,37 @@ def main():
                                                                                  "raise error")
     parser.add_argument("--ignore", "-i", type=str, help="File containing ignored packages")
     parser.add_argument("--ignore-packages", "-ip", nargs="+", help="List of packages to ignore")
-    parser.add_argument("--with-info", "-wi", action="store_true", help="Include Python version and OS info")
+    parser.add_argument("--with-info", "-wi", nargs="+", help="Include requested system information")
     args = parser.parse_args()
     sys_info = {
-        "python_version": f"{sys.version_info.major}.{sys.version_info.minor}",
-        "sys_platform": sys.platform.lower()
+        "os_name": os.name,
+        "sys_platform": sys.platform,
+        "platform_machine": platform.machine(),
+        "platform_python_implementation": platform.python_implementation(),
+        "platform_release": platform.release(),
+        "platform_system": platform.system(),
+        "platform_version": platform.version(),
+        "python_version": ".".join(platform.python_version_tuple()[:2]),
+        "python_full_version": platform.python_version(),
+        "implementation_name": sys.implementation.name,
+        "implementation_version": format_full_version()
     }
+    sys_info_req = None
     deps = parse_deps_tree(get_list())
     ignored_pkgs = []
     file_deps = None
+    if args.with_info:
+        sys_info_req = {key: sys_info[val] for key, val in sys_info.items() if key in args.with_info}
+        deps = add_info(deps, **sys_info_req)
     if args.list or args.list_file:
         if args.list:
             print_deps_tree(deps)
         if args.list_file:
             write_deps_tree_to_file(args.list_file, deps)
-        if args.with_info:
-            deps = add_info(deps, **sys_info)
-            if args.list:
-                print_deps_tree_with_info(deps, **sys_info)
-            if args.list_file:
-                write_deps_tree_with_info_to_file(args.list_file, deps, **sys_info)
+        if args.list and args.with_info:
+            print_deps_tree_with_info(deps, **sys_info_req)
+        if args.list_file and args.with_info:
+            write_deps_tree_with_info_to_file(args.list_file, deps, **sys_info_req)
     if args.check_missing or args.check_extra or args.raise_missing_error or args.raise_extra_error:
         dep_file = [check for check in [args.check_missing, args.check_extra] if check][0]
         if dep_file:
@@ -101,11 +114,8 @@ def main():
                         if val is not None and key not in ["name", "at", "version", "deps"]
                     }
                 )
-                print("kwargs_len", kwargs_len)
                 if kwargs_len:
-                    print("len(file_deps)", len(file_deps))
                     file_deps = filter_deps_tree(file_deps, **sys_info)
-                    print("len(file_deps)", len(file_deps))
         if args.ignore:
             with open(args.ignore, 'r', encoding="utf-8") as file:
                 ignore_lines = file.read()
@@ -113,9 +123,7 @@ def main():
         elif args.ignore_packages:
             ignored_pkgs = parse_deps_tree(f"{chr(10).join(args.ignore_packages)}\n")
     if args.check_missing:
-        print("len(deps)", len(deps))
         deps = add_info(deps, **sys_info)
-        print("len(deps)", len(deps))
         missing_pkgs = find_missing_pkgs(deps, file_deps, ignored_pkgs)
         for pkg in missing_pkgs:
             print(f"Missing: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
