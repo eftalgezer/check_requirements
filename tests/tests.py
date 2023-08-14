@@ -59,6 +59,8 @@ def test_add_info():
     assert isinstance(deps_with_info, list)
     assert deps_with_info[0]["python_version"] == PYTHON_VERSION
     assert deps_with_info[0]["sys_platform"] == sys.platform
+    assert deps_with_info[0]["deps"][0]["python_version"] == PYTHON_VERSION
+    assert deps_with_info[0]["deps"][0]["sys_platform"] == sys.platform
 
 
 def test_filter_deps_tree():
@@ -169,8 +171,10 @@ def test_print_deps_tree():
         }
     ]
     deps = add_info_tester(deps, python_version=PYTHON_VERSION, sys_platform=sys.platform)
-    assert deps["python_version"] == PYTHON_VERSION
-    assert deps["sys_platform"] == sys.platform
+    assert deps[0]["python_version"] == PYTHON_VERSION
+    assert deps[0]["sys_platform"] == sys.platform
+    assert deps[0]["deps"][0]["python_version"] == PYTHON_VERSION
+    assert deps[0]["deps"][0]["sys_platform"] == sys.platform
     printed_lines = print_deps_tree_tester(deps)
     assert printed_lines[0] == f"package1 == 1.0; "\
                                f"python_version == {PYTHON_VERSION} and "\
@@ -219,8 +223,10 @@ def test_write_deps_tree_to_file():
         }
     ]
     deps = add_info_tester(deps, python_version=PYTHON_VERSION, sys_platform=sys.platform)
-    assert deps["python_version"] == PYTHON_VERSION
-    assert deps["sys_platform"] == sys.platform
+    assert deps[0]["python_version"] == PYTHON_VERSION
+    assert deps[0]["sys_platform"] == sys.platform
+    assert deps[0]["deps"][0]["python_version"] == PYTHON_VERSION
+    assert deps[0]["deps"][0]["sys_platform"] == sys.platform
     written_lines = write_deps_tree_to_file_tester(deps)
     expected_lines = [
         f"package1 == 1.0; python_version == {PYTHON_VERSION}"
