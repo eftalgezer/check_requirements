@@ -12,7 +12,6 @@ jobs:
   build:
 
     runs-on: ${{ matrix.os }}
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -40,8 +39,10 @@ jobs:
       run: |
             check_requirements -l -wi
     - name: Check missing requirements
+      if: always()
       run: |
             check_requirements -cm requirements.txt -rme -ip "check-requirements" -wi
     - name: Check extra requirements
+      if: always()
       run: |
             check_requirements -ce requirements.txt -ree -ip "check-requirements" -wi
