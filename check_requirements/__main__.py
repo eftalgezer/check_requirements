@@ -117,7 +117,10 @@ def main():
             ignored_pkgs = parse_deps_tree(f"{chr(10).join(args.ignore_packages)}\n")
     if args.check_missing:
         deps = add_info(deps, **sys_info)
+        print(len(deps))
+        print(len(file_deps))
         missing_pkgs = find_missing_pkgs(deps, file_deps, ignored_pkgs)
+        print(len(missing_pkgs))
         for pkg in missing_pkgs:
             print(f"Missing: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
     if args.check_extra:

@@ -128,7 +128,7 @@ def filter_deps_tree(deps, **kwargs):
     Returns:
     list: A filtered list of packages that match the specified criteria.
     """
-    return [pkg for pkg in deps if all(pkg.get(key) == val for key, val in kwargs.items())]
+    return [pkg for pkg in deps if all(pkg.get(key) == val for key, val in kwargs.items() if pkg.get(key))]
 
 
 def print_deps_tree(deps, indent=0):
@@ -223,7 +223,6 @@ def find_missing_pkgs(deps_a, deps_b, ignored_pkgs=None):
             missing_pkgs.extend(find_missing_pkgs(pkg_a["deps"], deps_b, ignored_pkgs))
         elif not is_pkg_in_subtree(pkg_a, deps_b):
             missing_pkgs.append(pkg_a)
-            missing_pkgs.extend(find_missing_pkgs(pkg_a["deps"], deps_b, ignored_pkgs))
         missing_pkgs.extend(find_missing_pkgs(pkg_a["deps"], deps_b, ignored_pkgs))
     return list({name["name"]: name for name in missing_pkgs}.values())
 
