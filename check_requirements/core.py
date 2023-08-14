@@ -90,7 +90,6 @@ def parse_deps_tree(lines):
         else:
             deps.append(pkg_data)
         stack.append(pkg_data)
-    print(deps)
     return deps
 
 
@@ -113,7 +112,6 @@ def add_info(deps, **kwargs):
         index = deps.index(pkg)
         deps[index] = {key_key: new_pkg[key_key] for key_key in keys}
         deps[index]["deps"] = add_info(pkg["deps"])
-    print("deps", deps)
     return deps
 
 
