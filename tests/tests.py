@@ -239,9 +239,9 @@ def test_write_deps_tree_with_info_to_file():
     )
     expected_lines = [
         f"package1 == 1.0; python_version == {sys.version_info.major}.{sys.version_info.minor}"
-        f"and sys_platform == {sys.platform.lower()}\n",
+        f" and sys_platform == {sys.platform.lower()}\n",
         f"  package2 == 2.0; python_version == {sys.version_info.major}.{sys.version_info.minor}"
-        f"and sys_platform == {sys.platform.lower()}\n"
+        f" and sys_platform == {sys.platform.lower()}\n"
     ]
     assert written_lines == expected_lines
 
