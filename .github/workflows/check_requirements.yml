@@ -1,5 +1,7 @@
 name: Check requirements
 on:
+  workflow_run:
+    workflows: ["Python package"]
   push:
     branches: [ "main" ]
   pull_request:
