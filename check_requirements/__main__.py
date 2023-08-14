@@ -92,7 +92,7 @@ def main():
     ignored_pkgs = []
     file_deps = None
     if args.with_info:
-        sys_info_req = {key: sys_info[val] for key, val in sys_info.items() if key in args.with_info}
+        sys_info_req = {key: sys_info[key] for key, val in sys_info.items() if key in args.with_info}
         deps = add_info(deps, **sys_info_req)
     if args.list or args.list_file:
         if args.list:
