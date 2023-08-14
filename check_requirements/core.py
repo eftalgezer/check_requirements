@@ -85,6 +85,7 @@ def parse_deps_tree(lines):
         else:
             deps.append(pkg_data)
         stack.append(pkg_data)
+    print(deps)
     return deps
 
 
