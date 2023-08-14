@@ -562,7 +562,6 @@ def test_main__check_extra():
     """
     with _dummy_pkg_file(1) as dummy:
         output = main_tester(f"check_requirements -ce {dummy.file.name}")
-        print(output)
         assert "package1" in output
 
 

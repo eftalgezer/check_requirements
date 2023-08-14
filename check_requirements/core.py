@@ -172,10 +172,13 @@ def print_deps_tree_with_info(deps, indent=0, **kwargs):
     """
     for pkg in deps:
         print("  " * indent, end="")
-        print(f"{pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''};", end=" ")
+        print(f"{pkg['name']}", end="")
+        print(f" @ {pkg.get('at')}" if pkg.get('at') else "", end="")
+        print(f"{f''' == {pkg.get('version')}''' if pkg.get('version') else ''};", end=" ")
         for count, (key, val) in enumerate(kwargs.items(), start=1):
             if key not in ["name", "at", "version", "deps"] and val:
                 print(f"{key} == {val}", end=" and " if count != len(pkg.items()) else "")
+        print("")
         print_deps_tree_with_info(pkg['deps'], indent + 1, **kwargs)
 
 
