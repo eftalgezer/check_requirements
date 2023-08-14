@@ -156,7 +156,7 @@ def print_deps_tree(deps, indent=0):
                 if semicolon:
                     print(";", end=" ")
                     semicolon = False
-                print(f"{key} == {val}", end=" and " if count != len(pkg.items()) else "")
+                print(f"{key} == {val}", end=" and " if count != len(pkg.items()) - 1 else "")
         print("")
         print_deps_tree(pkg['deps'], indent + 1)
 
