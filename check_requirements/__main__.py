@@ -94,15 +94,14 @@ def main():
     if args.with_info:
         sys_info_req = {key: sys_info[key] for key, val in sys_info.items() if key in args.with_info}
         deps = add_info(deps, **sys_info_req)
-    if args.list or args.list_file:
-        if args.list:
-            print_deps_tree(deps)
-        if args.list_file:
-            write_deps_tree_to_file(args.list_file, deps)
-        if args.list and args.with_info:
-            print_deps_tree_with_info(deps, **sys_info_req)
-        if args.list_file and args.with_info:
-            write_deps_tree_with_info_to_file(args.list_file, deps, **sys_info_req)
+    if args.list:
+        print_deps_tree(deps)
+    if args.list_file:
+        write_deps_tree_to_file(args.list_file, deps)
+    if args.list and args.with_info:
+        print_deps_tree_with_info(deps, **sys_info_req)
+    if args.list_file and args.with_info:
+        write_deps_tree_with_info_to_file(args.list_file, deps, **sys_info_req)
     if args.check_missing or args.check_extra or args.raise_missing_error or args.raise_extra_error:
         dep_file = [check for check in [args.check_missing, args.check_extra] if check][0]
         if dep_file:

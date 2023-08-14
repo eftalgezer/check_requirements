@@ -17,8 +17,9 @@ Functions:
  - is_pkg_in_subtree(pkg: dict, deps: dict): Checks if a package exists in a dependency subtree.
  - find_missing_pkgs(deps_a: dict, deps_b: dict, ignored_pkgs: list): Finds missing packages in deps_a compared to
  deps_b, ignoring specified packages.
-- check_and_raise_error(deps_a: dict, deps_b: dict, ignored_pkgs: list): Raises ImportError if missing packages are
+ - check_and_raise_error(deps_a: dict, deps_b: dict, ignored_pkgs: list): Raises ImportError if missing packages are
 found in deps_a compared to deps_b, ignoring specified packages.
+ -  format_full_version(): Formats the Python interpreter's full version information.
 """
 
 import sys
@@ -111,7 +112,7 @@ def add_info(deps, **kwargs):
             new_pkg[key] = val
         index = deps.index(pkg)
         deps[index] = {key_key: new_pkg[key_key] for key_key in keys}
-        deps[index]["deps"] = add_info(pkg["deps"])
+        deps[index]["deps"] = add_info(pkg["deps"], **kwargs)
     return deps
 
 

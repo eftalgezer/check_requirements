@@ -2,7 +2,7 @@
 [![PyPI version](https://badge.fury.io/py/check_requirements.svg)](https://badge.fury.io/py/check_requirements)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/check_requirements.svg)](https://pypi.python.org/pypi/check_requirements/)
 [![Python package](https://github.com/eftalgezer/check_requirements/actions/workflows/python-package.yml/badge.svg)](https://github.com/eftalgezer/check_requirements/actions/workflows/python-package.yml)
-[![Python package](https://github.com/eftalgezer/check_requirements/actions/workflows/check-requirements.yml/badge.svg)](https://github.com/eftalgezer/check_requirements/actions/workflows/check-requirements.yml)
+[![Check requirements](https://github.com/eftalgezer/check_requirements/actions/workflows/check-requirements.yml/badge.svg)](https://github.com/eftalgezer/check_requirements/actions/workflows/check-requirements.yml)
 [![codecov](https://codecov.io/gh/eftalgezer/check_requirements/branch/main/graph/badge.svg?token=Q9TJFIN1U1)](https://codecov.io/gh/eftalgezer/check_requirements)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/f0c0e8e9cf6a4151ac39bbad05e3c535)](https://app.codacy.com/gh/eftalgezer/check_requirements/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 [![PyPI download month](https://img.shields.io/pypi/dm/check_requirements.svg)](https://pypi.python.org/pypi/check_requirements/)
