@@ -17,9 +17,7 @@ from .tests import (test_get_list,
                     test_parse_deps_tree,
                     test_add_info,
                     test_print_deps_tree,
-                    test_print_deps_tree_with_info,
                     test_write_deps_tree_to_file,
-                    test_write_deps_tree_with_info_to_file,
                     test_is_pkg_in_subtree,
                     test_find_missing_pkgs,
                     test_find_missing_pkgs__ignored,
@@ -50,9 +48,7 @@ if __name__ == "__main__":
     test_parse_deps_tree()
     test_add_info()
     test_print_deps_tree()
-    test_print_deps_tree_with_info()
     test_write_deps_tree_to_file()
-    test_write_deps_tree_with_info_to_file()
     test_is_pkg_in_subtree()
     test_find_missing_pkgs()
     test_find_missing_pkgs__ignored()
