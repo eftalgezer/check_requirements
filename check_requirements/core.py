@@ -105,8 +105,8 @@ def add_info(deps, **kwargs):
     list: The updated dependency tree with added information.
     """
     for pkg in deps:
+        keys = [pkg_key for pkg_key, _ in pkg.items()]
         for key, val in kwargs.items():
-            keys = [pkg_key for pkg_key, _ in pkg.items()]
             print("keys", keys)
             keys.insert(keys.index("deps") - 1, key)
             pkg[key] = val
