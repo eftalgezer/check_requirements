@@ -174,7 +174,7 @@ def print_deps_tree_with_info(deps, indent=0, **kwargs):
     """
     for pkg in deps:
         print("  " * indent, end="")
-        print(f"{pkg['name']}{' == ' if pkg['version'] else ''}{pkg['version']};", end=" ")
+        print(f"{pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''};", end=" ")
         for count, (key, val) in enumerate(kwargs.items(), start=1):
             if key not in ["name", "at", "version", "deps"] and val:
                 print(f"{key} == {val}", end=" and " if count != len(pkg.items()) else "")
