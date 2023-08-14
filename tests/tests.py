@@ -489,7 +489,7 @@ def test_main__list_file_with_info():
     main_tester("check_requirements -lf output.txt -wi python_version sys_platform")
     assert _search_pattern(
         _read_file("output.txt"),
-        r"([\w-]+) == [\d.]+;sys_platform == \w+ and python_version == \d\.\d{1,2}",
+        r"([\w-]+) == [\d.]+; sys_platform == \w+ and python_version == \d\.\d{1,2}",
         0
     )
     os.remove("output.txt")
