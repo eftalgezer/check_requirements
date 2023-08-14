@@ -498,9 +498,7 @@ def test_main__check_missing():
     Test checking for missing dependencies using the main script.
     """
     _pkg_install("SIESTAstepper")
-    output = main_tester("check_requirements -cm requirements.txt")
-    print(output)
-    assert "SIESTAstepper" in output
+    assert "SIESTAstepper" in main_tester("check_requirements -cm requirements.txt")
     _pkg_uninstall("SIESTAstepper")
 
 
