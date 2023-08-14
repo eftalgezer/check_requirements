@@ -38,12 +38,12 @@ jobs:
             pip install .
     - name: See requirements
       run: |
-            check_requirements -l -wi
+            check_requirements -l -wi python_version sys_platform
     - name: Check missing requirements
       if: always()
       run: |
-            check_requirements -cm requirements.txt -rme -ip "check-requirements" -wi
+            check_requirements -cm requirements.txt -rme -ip "check-requirements"
     - name: Check extra requirements
       if: always()
       run: |
-            check_requirements -ce requirements.txt -ree -ip "check-requirements" -wi
+            check_requirements -ce requirements.txt -ree -ip "check-requirements"
