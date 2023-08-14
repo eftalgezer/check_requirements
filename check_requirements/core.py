@@ -109,9 +109,8 @@ def add_info(deps, **kwargs):
         new_pkg = pkg.copy()
         for key, val in kwargs.items():
             keys.insert(keys.index("deps") - 1, key)
-            print("keys", keys)
             new_pkg[key] = val
-        deps[deps.index(pkg)] = {key: new_pkg[key_key] for key_key in keys}
+        deps[deps.index(pkg)] = {key_key: new_pkg[key_key] for key_key in keys}
         deps[deps.index(pkg)]["deps"] = add_info(pkg["deps"])
     return deps
 
