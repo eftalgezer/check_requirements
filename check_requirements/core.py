@@ -157,8 +157,9 @@ def print_deps_tree(deps, indent=0):
                     print(";", end=" ")
                     semicolon = False
                 print(f"{key} == {val}", end=" and " if count != len(pkg.items()) - 1 else "")
-        print("")
-        print_deps_tree(pkg['deps'], indent + 1)
+            if key == "deps":
+                print("")
+                print_deps_tree(pkg["deps"], indent + 1)
 
 
 def print_deps_tree_with_info(deps, indent=0, **kwargs):
@@ -167,7 +168,7 @@ def print_deps_tree_with_info(deps, indent=0, **kwargs):
 
     Args:
     deps (dict): A hierarchical dictionary representing the dependency tree.
-    **kwargs: System information
+    **kwargs: System information.
     indent (int, optional): Indentation level for formatting. Defaults to 0.
     """
     for pkg in deps:
@@ -291,10 +292,20 @@ def check_and_raise_error(deps_a, deps_b, ignored_pkgs=None):
 
 
 def format_full_version():
-    if hasattr(sys, 'implementation'):
-        version = '{0.major}.{0.minor}.{0.micro}'.format(sys.implementation.version)
+    """
+    Formats the Python interpreter's full version information.
+
+    This function retrieves the full version information of the Python interpreter and formats it into a string.
+    The formatted version includes the major, minor, and micro version numbers. If the interpreter's release level
+    is not 'final', the release level and serial number are also included in the formatted version string.
+
+    Returns:
+    str: A formatted string representing the Python interpreter's full version information.
+    """
+    if hasattr(sys, "implementation"):
+        version = "{0.major}.{0.minor}.{0.micro}".format(sys.implementation.version)
         kind = sys.implementation.version.releaselevel
-        if kind != 'final':
+        if kind != "final":
             version += kind[0] + str(sys.implementation.version.serial)
         return version
     return "0"

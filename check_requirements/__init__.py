@@ -17,4 +17,4 @@ __version__ = "0.1.0"
 
 from .core import get_list, parse_deps_tree, add_info, filter_deps_tree, print_deps_tree, print_deps_tree_with_info, \
     write_deps_tree_to_file, write_deps_tree_with_info_to_file, is_pkg_in_subtree, find_missing_pkgs, \
-    check_and_raise_error
+    check_and_raise_error, format_full_version
