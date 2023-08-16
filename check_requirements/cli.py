@@ -13,6 +13,8 @@ Functions:
     ImportError if found.
     - raise_extra_error(deps, file_deps, ignored_pkgs, sys_info): Check for extra dependencies and raise an ImportError
     if found.
+        - process_deps_file(dep_file, sys_info): Process a dependencies file and return filtered dependencies based on
+        system information.
 
 Note:
     Use these functions in conjunction with command-line arguments to perform various actions on package dependencies.
@@ -35,6 +37,9 @@ Example:
 
     To check for extra dependencies and raise an ImportError if found:
     raise_extra_error(deps, file_deps, ignored_pkgs, sys_info)
+
+    To process a dependencies file and return filtered dependencies based on system information:
+    process_deps_file("dependencies.txt", sys_info)
 """
 
 from .core import parse_deps_tree, filter_deps_tree, print_deps_tree, write_deps_tree_to_file, find_missing_pkgs, \
@@ -137,6 +142,25 @@ def raise_extra_error(deps, file_deps, ignored_pkgs):
 
 
 def process_deps_file(dep_file, sys_info):
+    """
+    Process a dependencies file and return filtered dependencies based on system information.
+
+    This function reads a dependencies file, parses its content into a list of hierarchical dictionaries representing
+    dependencies, and filters the dependencies based on the provided system information. It returns the processed
+    and filtered dependencies.
+
+    Args:
+        dep_file (str): Path to the dependencies file to be processed.
+        sys_info (dict): Dictionary containing system information.
+
+    Returns:
+        list: A list of hierarchical dictionaries representing the processed and filtered dependencies.
+
+    Example:
+        To process a dependencies file named "dependencies.txt" and return filtered dependencies based on system
+        information:
+        >>> processed_deps = process_deps_file("dependencies.txt", sys_info)
+    """
     with open(dep_file, "r", encoding="utf-8") as file:
         file_deps = parse_deps_tree(file.read())
         kwargs_len = len(
