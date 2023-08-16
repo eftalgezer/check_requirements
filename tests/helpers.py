@@ -70,20 +70,6 @@ def _read_file(file_path):
         return file.read()
 
 
-def _pkg_install(pkg):
-    """
-    Install the specified package.
-    """
-    run(split(f"python -m pip install {pkg} --no-input --no-dependencies"))
-
-
-def _pkg_uninstall(pkg):
-    """
-    Uninstall the specified package.
-    """
-    run(split(f"python -m pip uninstall {pkg} --yes"))
-
-
 class _dummy_pkg_file:
     """
     Context manager class to create a temporary file with dummy package names for testing purposes.

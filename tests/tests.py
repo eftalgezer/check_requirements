@@ -11,7 +11,8 @@ import platform
 import re
 from contextlib import suppress
 from unittest import TestCase
-from .helpers import _search_pattern, _read_file, _pkg_install, _pkg_uninstall, _dummy_pkg_file, _pkg_file
+from dummy_package_manager import DummyPackage
+from .helpers import _search_pattern, _read_file, _dummy_pkg_file, _pkg_file
 from .testers import get_list_tester, parse_deps_tree_tester, add_info_tester, filter_deps_tree_tester, \
     print_deps_tree_tester, write_deps_tree_to_file_tester, is_pkg_in_subtree_tester, find_missing_pkgs_tester, \
     check_and_raise_error_tester, main_tester
@@ -488,63 +489,59 @@ def test_main__check_missing():
     """
     Test checking for missing dependencies using the main script.
     """
-    _pkg_install("SIESTAstepper")
-    assert "SIESTAstepper" in main_tester("check_requirements -cm requirements.txt")
-    _pkg_uninstall("SIESTAstepper")
+    with DummyPackage("package1") as dummy_pkg:
+        dummy_pkg.install()
+        assert "package1" in main_tester("check_requirements -cm requirements.txt")
 
 
 def test_main__check_missing_ignore():
     """
     Test checking for missing dependencies using the main script while ignoring specified packages.
     """
-    _pkg_install("SIESTAstepper==2.1.0")
-    _pkg_install("ANIAnimator==0.2.2")
-    with _pkg_file(["SIESTAstepper == 2.1.0"]) as ignored:
-        output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name}")
-        assert "SIESTAstepper == 2.1.0" not in output
-        assert "ANIAnimator == 0.2.2" in output
-    _pkg_uninstall("SIESTAstepper==2.1.0")
-    _pkg_uninstall("ANIAnimator==0.2.2")
+    with DummyPackage("package1", requirements=["package2"]) as dummy_pkg:
+        dummy_pkg.install()
+        with _pkg_file(["package1 == 0.1.0"]) as ignored:
+            output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name}")
+            assert "package1 == 0.1.0" not in output
+            assert "package2 == 0.1.0" in output
 
 
 def test_main__check_missing_ignore_packages():
     """
     Test checking for missing dependencies using the main script while ignoring specified packages.
     """
-    _pkg_install("SIESTAstepper==2.1.0")
-    _pkg_install("ANIAnimator==0.2.2")
-    output = main_tester("check_requirements -cm requirements.txt -ip SIESTAstepper==2.1.0")
-    assert "SIESTAstepper == 2.1.0" not in output
-    assert "ANIAnimator == 0.2.2" in output
-    _pkg_uninstall("SIESTAstepper==2.1.0")
-    _pkg_uninstall("ANIAnimator==0.2.2")
+    with DummyPackage("package1", requirements=["package2"]) as dummy_pkg:
+        dummy_pkg.install()
+        output = main_tester("check_requirements -cm requirements.txt -ip package1==0.1.0")
+        assert "package1 == 0.1.0" not in output
+        assert "package2 == 0.1.0" in output
 
 
 def test_main__check_missing_ignore__2():
     """
     Test checking for missing dependencies using the main script while ignoring specified packages.
     """
-    _pkg_install("SIESTAstepper==2.1.0")
-    _pkg_install("fstring_to_format==0.1.2")
-    with _pkg_file(["SIESTAstepper == 2.1.0"]) as ignored:
-        output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name}")
-        assert "SIESTAstepper == 2.1.0" not in output
-        assert "fstring-to-format == 0.1.2" in output
-    _pkg_uninstall("SIESTAstepper==2.1.0")
-    _pkg_uninstall("fstring_to_format==0.1.2")
+    with DummyPackage("package1") as dummy_pkg_1:
+        with DummyPackage("package2") as dummy_pkg_2:
+            dummy_pkg_1.install()
+            dummy_pkg_2.install()
+            with _pkg_file(["package1 == 0.1.0"]) as ignored:
+                output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name}")
+                assert "package1 == 0.1.0" not in output
+                assert "package2 == 0.1.0" in output
 
 
 def test_main__check_missing_ignore_packages__2():
     """
     Test checking for missing dependencies using the main script while ignoring specified packages.
     """
-    _pkg_install("SIESTAstepper==2.1.0")
-    _pkg_install("fstring_to_format==0.1.2")
-    output = main_tester("check_requirements -cm requirements.txt -ip SIESTAstepper==2.1.0")
-    assert "SIESTAstepper == 2.1.0" not in output
-    assert "fstring-to-format == 0.1.2" in output
-    _pkg_uninstall("SIESTAstepper==2.1.0")
-    _pkg_uninstall("fstring_to_format==0.1.2")
+    with DummyPackage("package1") as dummy_pkg_1:
+        with DummyPackage("package2") as dummy_pkg_2:
+            dummy_pkg_1.install()
+            dummy_pkg_2.install()
+            output = main_tester("check_requirements -cm requirements.txt -ip package1==0.1.0")
+            assert "package1 == 0.1.0" not in output
+            assert "package2 == 0.1.0" in output
 
 
 def test_main__check_extra():
@@ -581,42 +578,35 @@ def test_main__raise_missing_error():
     """
     Test if the main function correctly raises ImportError for missing dependencies without ignoring any packages.
     """
-    case = TestCase()
-    _pkg_install("SIESTAstepper")
-    with case.assertRaises(ImportError):
-        assert "SIESTAstepper" in main_tester("check_requirements -cm requirements.txt -rme")
-    _pkg_uninstall("SIESTAstepper")
+    with DummyPackage("package1") as dummy_pkg:
+        dummy_pkg.install()
+        with TestCase().assertRaises(ImportError):
+            assert "package1" in main_tester("check_requirements -cm requirements.txt -rme")
 
 
 def test_main__raise_missing_error_ignore():
     """
     Test if the main function correctly raises ImportError for missing dependencies while ignoring specified packages.
     """
-    case = TestCase()
-    _pkg_install("SIESTAstepper==2.1.0")
-    _pkg_install("ANIAnimator==0.2.2")
-    with _pkg_file(["SIESTAstepper == 2.1.0"]) as ignored:
-        with case.assertRaises(ImportError):
-            output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name} -rme")
-            assert "SIESTAstepper == 2.1.0" not in output
-            assert "ANIAnimator == 0.2.2" in output
-    _pkg_uninstall("SIESTAstepper==2.1.0")
-    _pkg_uninstall("ANIAnimator==0.2.2")
+    with DummyPackage("package1", requirements=["package2"]) as dummy_pkg:
+        dummy_pkg.install()
+        with _pkg_file(["package1 == 0.1.0"]) as ignored:
+            with TestCase().assertRaises(ImportError):
+                output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name} -rme")
+                assert "package1 == 0.1.0" not in output
+                assert "package2 == 0.1.0" in output
 
 
 def test_main__raise_missing_error_ignore_packages():
     """
     Test if the main function correctly raises ImportError for missing dependencies while ignoring specified packages.
     """
-    case = TestCase()
-    _pkg_install("SIESTAstepper==2.1.0")
-    _pkg_install("ANIAnimator==0.2.2")
-    with case.assertRaises(ImportError):
-        output = main_tester("check_requirements -cm requirements.txt -ip SIESTAstepper==2.1.0 -rme")
-        assert "SIESTAstepper == 2.1.0" not in output
-        assert "ANIAnimator == 0.2.2" in output
-    _pkg_uninstall("SIESTAstepper==2.1.0")
-    _pkg_uninstall("ANIAnimator==0.2.2")
+    with DummyPackage("package1", requirements=["package2"]) as dummy_pkg:
+        dummy_pkg.install()
+        with TestCase().assertRaises(ImportError):
+            output = main_tester("check_requirements -cm requirements.txt -ip package1==0.1.0 -rme")
+            assert "package1 == 0.1.0" not in output
+            assert "package2 == 0.1.0" in output
 
 
 def test_main__raise_extra_error():
