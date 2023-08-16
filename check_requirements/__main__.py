@@ -78,11 +78,9 @@ def main():
     deps = parse_deps_tree(get_list())
     ignored_pkgs = []
     file_deps = None
-    if args.with_info:
+    if args.with_info and (args.list or args.list_file):
         sys_info_req = {key: sys_info[key] for key in args.with_info}
         deps = add_info(deps, **sys_info_req)
-    elif not args.list and not args.list_file:
-        deps = add_info(deps, **sys_info)
     if args.ignore:
         with open(args.ignore, 'r', encoding="utf-8") as file:
             ignore_lines = file.read()
