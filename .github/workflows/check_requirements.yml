@@ -32,6 +32,7 @@ jobs:
         pip install --upgrade pip
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest
+        python -m pip install dummy_package_manager
         python -m pip install pipdeptree
     - name: Install repository
       run: |
