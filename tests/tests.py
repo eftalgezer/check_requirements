@@ -502,7 +502,6 @@ def test_main__check_missing_ignore():
         dummy_pkg.install()
         with _pkg_file(["package1"]) as ignored:
             output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name}")
-            print("output", output)
             assert "package1" not in output
             assert "package2" in output
 
