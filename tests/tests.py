@@ -500,11 +500,11 @@ def test_main__check_missing_ignore():
     """
     with DummyPackage("package1", requirements=["package2"]) as dummy_pkg:
         dummy_pkg.install()
-        with _pkg_file(["package1 == 0.1.0"]) as ignored:
+        with _pkg_file(["package1"]) as ignored:
             output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name}")
             print("output", output)
-            assert "package1 == 0.1.0" not in output
-            assert "package2 == 0.1.0" in output
+            assert "package1" not in output
+            assert "package2" in output
 
 
 def test_main__check_missing_ignore_packages():
@@ -513,9 +513,9 @@ def test_main__check_missing_ignore_packages():
     """
     with DummyPackage("package1", requirements=["package2"]) as dummy_pkg:
         dummy_pkg.install()
-        output = main_tester("check_requirements -cm requirements.txt -ip package1==0.1.0")
-        assert "package1 == 0.1.0" not in output
-        assert "package2 == 0.1.0" in output
+        output = main_tester("check_requirements -cm requirements.txt -ip package1")
+        assert "package1" not in output
+        assert "package2" in output
 
 
 def test_main__check_missing_ignore__2():
@@ -526,10 +526,10 @@ def test_main__check_missing_ignore__2():
         with DummyPackage("package2") as dummy_pkg_2:
             dummy_pkg_1.install()
             dummy_pkg_2.install()
-            with _pkg_file(["package1 == 0.1.0"]) as ignored:
+            with _pkg_file(["package1"]) as ignored:
                 output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name}")
-                assert "package1 == 0.1.0" not in output
-                assert "package2 == 0.1.0" in output
+                assert "package1" not in output
+                assert "package2" in output
 
 
 def test_main__check_missing_ignore_packages__2():
@@ -540,9 +540,9 @@ def test_main__check_missing_ignore_packages__2():
         with DummyPackage("package2") as dummy_pkg_2:
             dummy_pkg_1.install()
             dummy_pkg_2.install()
-            output = main_tester("check_requirements -cm requirements.txt -ip package1==0.1.0")
-            assert "package1 == 0.1.0" not in output
-            assert "package2 == 0.1.0" in output
+            output = main_tester("check_requirements -cm requirements.txt -ip package1")
+            assert "package1" not in output
+            assert "package2" in output
 
 
 def test_main__check_extra():
