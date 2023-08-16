@@ -500,6 +500,9 @@ def test_main__check_missing_ignore():
     """
     with DummyPackage("package1", requirements=["package2"]) as dummy_pkg:
         dummy_pkg.install()
+        is_installed = dummy_pkg.package["is_installed"]
+        while not is_installed:
+            is_installed = dummy_pkg.package["is_installed"]
         with _pkg_file(["package1 == 0.1.0"]) as ignored:
             output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name}")
             assert "package1 == 0.1.0" not in output
