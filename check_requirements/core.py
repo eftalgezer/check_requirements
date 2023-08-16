@@ -168,9 +168,8 @@ def write_deps_tree_to_file(file_path, deps):
     deps (dict): A hierarchical dictionary representing the dependency tree.
     """
     original_stdout = sys.stdout
-    sys.stdout = open(file_path, "w", encoding="utf-8")
-    print_deps_tree(deps)
-    sys.stdout.close()
+    with open(file_path, "w", encoding="utf-8") as sys.stdout:
+        print_deps_tree(deps)
     sys.stdout = original_stdout
 
 
@@ -261,7 +260,9 @@ def format_full_version():
     str: A formatted string representing the Python interpreter's full version information.
     """
     if hasattr(sys, "implementation"):
-        version = "{0.major}.{0.minor}.{0.micro}".format(sys.implementation.version)
+        version = f"{sys.implementation.version.major}" \
+                  f".{sys.implementation.version.minor}" \
+                  f".{sys.implementation.version.micro}"
         kind = sys.implementation.version.releaselevel
         if kind != "final":
             version += kind[0] + str(sys.implementation.version.serial)

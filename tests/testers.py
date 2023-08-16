@@ -10,9 +10,9 @@ import os
 from tempfile import NamedTemporaryFile
 from unittest.mock import patch
 import pytest
-from .helpers import _capture_stdout
 from check_requirements import get_list, parse_deps_tree, add_info, filter_deps_tree, print_deps_tree, \
     write_deps_tree_to_file, is_pkg_in_subtree, find_missing_pkgs, check_and_raise_error
+from .helpers import _capture_stdout
 
 
 def get_list_tester():
@@ -64,8 +64,8 @@ def write_deps_tree_to_file_tester(deps):
     written_lines = None
     with NamedTemporaryFile(delete=False) as temp_file:
         write_deps_tree_to_file(temp_file.name, deps)
-        with open(temp_file.name, 'r') as f:
-            written_lines = f.readlines()
+        with open(temp_file.name, 'r', encoding="utf-8") as file:
+            written_lines = file.readlines()
     os.remove(temp_file.name)
     return written_lines
 
