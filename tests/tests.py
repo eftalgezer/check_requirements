@@ -457,7 +457,7 @@ def test_main__list_with_info():
     Test listing dependencies with additional information to the console using the main script.
     """
     assert _search_pattern(
-        main_tester("check_requirements -l -wi python_version sys_platform"),
+        main_tester("check_requirements -l -wi sys_platform python_version"),
         r"([\w-]+) == [\d.]+; sys_platform == \w+ and python_version == \d\.\d{1,2}",
         0
     )
@@ -476,7 +476,7 @@ def test_main__list_file_with_info():
     """
     Test saving dependencies with additional information to a file using the main script.
     """
-    main_tester("check_requirements -lf output.txt -wi python_version sys_platform")
+    main_tester("check_requirements -lf output.txt -wi sys_platform python_version")
     assert _search_pattern(
         _read_file("output.txt"),
         r"([\w-]+) == [\d.]+; sys_platform == \w+ and python_version == \d\.\d{1,2}",
