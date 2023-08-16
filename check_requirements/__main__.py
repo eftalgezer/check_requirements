@@ -1,12 +1,9 @@
 """
 check_requirements terminal client
-
 This script provides a command-line interface for managing Python package dependencies. It offers various features
 such as listing dependencies, checking for missing or extra packages, and raising errors for missing dependencies.
-
 Usage:
     python __main__.py [options]
-
 Options:
     --list, -l                List dependencies to the console.
     --list-file FILE, -lf FILE
@@ -22,42 +19,33 @@ Options:
     --ignore-packages PKG [PKG ...], -ip PKG [PKG ...]
                               List of packages to ignore.
     --with-info               Include Python version and OS information when listing dependencies.
-
 Note:
     Use appropriate options to perform desired actions on package dependencies.
-
 Examples:
     List dependencies to the console:
     check_dependencies --list
-
     Save dependencies to a file:
     check_dependencies --list-file dependencies.txt
-
     Check for missing dependencies and print a report:
     check_dependencies --check-missing missing_deps.txt
-
     Check for extra dependencies and print a report:
     check_dependencies --check-extra extra_deps.txt
-
     Check for missing dependencies and raise an error if found:
     check_dependencies --raise-missing-error missing_deps.txt
-
     Check for extra dependencies and raise an error if found:
     check_dependencies --raise-extra-error extra_deps.txt
 """
-
 import os
 import sys
 import platform
 import argparse
-from .core import get_list, parse_deps_tree, add_info, filter_deps_tree, print_deps_tree, write_deps_tree_to_file, \
-    find_missing_pkgs, check_and_raise_error, format_full_version
+from .core import get_list, parse_deps_tree, add_info, format_full_version
+from .cli import list_deps, list_file, check_missing, check_extra, raise_missing_error, raise_extra_error
 
 
 def main():
     """
     Main function for the check_requirements.
-
     Parses command-line arguments and executes the specified actions based on the arguments.
     """
     parser = argparse.ArgumentParser(description="check_requirements")
@@ -89,51 +77,28 @@ def main():
     deps = parse_deps_tree(get_list())
     ignored_pkgs = []
     file_deps = None
+    sys_info_req = None
     if args.with_info:
-        sys_info_req = {key: sys_info[key] for key, val in sys_info.items() if key in args.with_info}
+        sys_info_req = {key: sys_info[key] for key in args.with_info}
         deps = add_info(deps, **sys_info_req)
+    if args.ignore:
+        with open(args.ignore, 'r', encoding="utf-8") as file:
+            ignore_lines = file.read()
+            ignored_pkgs = parse_deps_tree(ignore_lines)
+    elif args.ignore_packages:
+        ignored_pkgs = parse_deps_tree(f"{chr(10).join(args.ignore_packages)}\n")
     if args.list:
-        print_deps_tree(deps)
+        list_deps(deps, sys_info_req)
     if args.list_file:
-        write_deps_tree_to_file(args.list_file, deps)
-    if args.check_missing or args.check_extra or args.raise_missing_error or args.raise_extra_error:
-        dep_file = [check for check in [args.check_missing, args.check_extra] if check][0]
-        if dep_file:
-            with open(dep_file, "r", encoding="utf-8") as file:
-                file_deps = parse_deps_tree(file.read())
-                kwargs_len = len(
-                    {
-                        key: val for key, val in file_deps[0].items()
-                        if val is not None and key not in ["name", "at", "version", "deps"]
-                    }
-                )
-                if kwargs_len:
-                    file_deps = filter_deps_tree(file_deps, **sys_info)
-        if args.ignore:
-            with open(args.ignore, 'r', encoding="utf-8") as file:
-                ignore_lines = file.read()
-                ignored_pkgs = parse_deps_tree(ignore_lines)
-        elif args.ignore_packages:
-            ignored_pkgs = parse_deps_tree(f"{chr(10).join(args.ignore_packages)}\n")
+        list_file(deps, sys_info_req, args.list_file)
     if args.check_missing:
-        deps = add_info(deps, **sys_info)
-        print(len(deps))
-        print(len(file_deps))
-        missing_pkgs = find_missing_pkgs(deps, file_deps, ignored_pkgs)
-        print(len(missing_pkgs))
-        for pkg in missing_pkgs:
-            print(f"Missing: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
+        check_missing(deps, file_deps, ignored_pkgs, sys_info)
     if args.check_extra:
-        deps = add_info(deps, **sys_info)
-        extra_pkgs = find_missing_pkgs(file_deps, deps, ignored_pkgs)
-        for pkg in extra_pkgs:
-            print(f"Extra: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
+        check_extra(deps, file_deps, ignored_pkgs, sys_info)
     if args.raise_missing_error and args.check_missing:
-        deps = add_info(deps, **sys_info)
-        check_and_raise_error(deps, file_deps, ignored_pkgs)
+        raise_missing_error(deps, file_deps, ignored_pkgs, sys_info)
     if args.raise_extra_error and args.check_extra:
-        deps = add_info(deps, **sys_info)
-        check_and_raise_error(file_deps, deps, ignored_pkgs)
+        raise_extra_error(deps, file_deps, ignored_pkgs, sys_info)
 
 
 if __name__ == "__main__":
