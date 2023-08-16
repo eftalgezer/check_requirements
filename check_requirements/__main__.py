@@ -40,7 +40,8 @@ import sys
 import platform
 import argparse
 from .core import get_list, parse_deps_tree, add_info, format_full_version
-from .cli import list_deps, list_file, check_missing, check_extra, raise_missing_error, raise_extra_error
+from .cli import list_deps, list_file, check_missing, check_extra, raise_missing_error, raise_extra_error, \
+    process_deps_file
 
 
 def main():
@@ -77,28 +78,33 @@ def main():
     deps = parse_deps_tree(get_list())
     ignored_pkgs = []
     file_deps = None
-    sys_info_req = None
     if args.with_info:
         sys_info_req = {key: sys_info[key] for key in args.with_info}
         deps = add_info(deps, **sys_info_req)
+    else:
+        deps = add_info(deps, **sys_info)
     if args.ignore:
         with open(args.ignore, 'r', encoding="utf-8") as file:
             ignore_lines = file.read()
             ignored_pkgs = parse_deps_tree(ignore_lines)
     elif args.ignore_packages:
         ignored_pkgs = parse_deps_tree(f"{chr(10).join(args.ignore_packages)}\n")
+    if args.check_missing or args.check_extra:
+        dep_file = [check for check in [args.check_missing, args.check_extra] if check][0]
+        if dep_file:
+            file_deps = process_deps_file(dep_file, sys_info)
     if args.list:
-        list_deps(deps, sys_info_req)
+        list_deps(deps)
     if args.list_file:
-        list_file(deps, sys_info_req, args.list_file)
+        list_file(deps, args.list_file)
     if args.check_missing:
-        check_missing(deps, file_deps, ignored_pkgs, sys_info)
+        check_missing(deps, file_deps, ignored_pkgs)
     if args.check_extra:
-        check_extra(deps, file_deps, ignored_pkgs, sys_info)
+        check_extra(deps, file_deps, ignored_pkgs)
     if args.raise_missing_error and args.check_missing:
-        raise_missing_error(deps, file_deps, ignored_pkgs, sys_info)
+        raise_missing_error(deps, file_deps, ignored_pkgs)
     if args.raise_extra_error and args.check_extra:
-        raise_extra_error(deps, file_deps, ignored_pkgs, sys_info)
+        raise_extra_error(deps, file_deps, ignored_pkgs)
 
 
 if __name__ == "__main__":

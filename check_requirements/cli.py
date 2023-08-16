@@ -37,44 +37,38 @@ Example:
     raise_extra_error(deps, file_deps, ignored_pkgs, sys_info)
 """
 
-from .core import add_info, filter_deps_tree, print_deps_tree, write_deps_tree_to_file, find_missing_pkgs, \
+from .core import parse_deps_tree, filter_deps_tree, print_deps_tree, write_deps_tree_to_file, find_missing_pkgs, \
     check_and_raise_error
 
 
-def list_deps(deps, sys_info):
+def list_deps(deps):
     """
     List dependencies to the console.
 
     Args:
         deps (list): A list of hierarchical dictionaries representing the dependency tree.
-        sys_info (dict): Dictionary containing system information.
 
     Returns:
         None
     """
-    if sys_info:
-        deps = add_info(deps, **sys_info)
     print_deps_tree(deps)
 
 
-def list_file(deps, sys_info, file_path):
+def list_file(deps, file_path):
     """
     Save dependencies to a file.
 
     Args:
         deps (list): A list of hierarchical dictionaries representing the dependency tree.
-        sys_info (dict): Dictionary containing system information.
         file_path (str): Path to the file where dependencies will be saved.
 
     Returns:
         None
     """
-    if sys_info:
-        deps = add_info(deps, **sys_info)
     write_deps_tree_to_file(file_path, deps)
 
 
-def check_missing(deps, file_deps, ignored_pkgs, sys_info):
+def check_missing(deps, file_deps, ignored_pkgs):
     """
     Check for missing dependencies and print a report.
 
@@ -82,28 +76,16 @@ def check_missing(deps, file_deps, ignored_pkgs, sys_info):
         deps (list): A list of hierarchical dictionaries representing the dependency tree.
         file_deps (list): A list of hierarchical dictionaries representing file dependencies.
         ignored_pkgs (list): A list of packages to be ignored.
-        sys_info (dict): Dictionary containing system information.
 
     Returns:
         None
     """
-    if sys_info:
-        deps = add_info(deps, **sys_info)
-    if file_deps:
-        kwargs_len = len(
-            {
-                key: val for key, val in file_deps[0].items()
-                if val is not None and key not in ["name", "at", "version", "deps"]
-            }
-        )
-        if kwargs_len:
-            file_deps = filter_deps_tree(file_deps, **sys_info)
     missing_pkgs = find_missing_pkgs(deps, file_deps, ignored_pkgs)
     for pkg in missing_pkgs:
         print(f"Missing: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
 
 
-def check_extra(deps, file_deps, ignored_pkgs, sys_info):
+def check_extra(deps, file_deps, ignored_pkgs):
     """
     Check for extra dependencies and print a report.
 
@@ -111,28 +93,16 @@ def check_extra(deps, file_deps, ignored_pkgs, sys_info):
         deps (list): A list of hierarchical dictionaries representing the dependency tree.
         file_deps (list): A list of hierarchical dictionaries representing file dependencies.
         ignored_pkgs (list): A list of packages to be ignored.
-        sys_info (dict): Dictionary containing system information.
 
     Returns:
         None
     """
-    if sys_info:
-        deps = add_info(deps, **sys_info)
-    if file_deps:
-        kwargs_len = len(
-            {
-                key: val for key, val in file_deps[0].items()
-                if val is not None and key not in ["name", "at", "version", "deps"]
-            }
-        )
-        if kwargs_len:
-            file_deps = filter_deps_tree(file_deps, **sys_info)
     extra_pkgs = find_missing_pkgs(file_deps, deps, ignored_pkgs)
     for pkg in extra_pkgs:
         print(f"Extra: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
 
 
-def raise_missing_error(deps, file_deps, ignored_pkgs, sys_info):
+def raise_missing_error(deps, file_deps, ignored_pkgs):
     """
     Check for missing dependencies and raise an ImportError if found.
 
@@ -140,28 +110,16 @@ def raise_missing_error(deps, file_deps, ignored_pkgs, sys_info):
         deps (list): A list of hierarchical dictionaries representing the dependency tree.
         file_deps (list): A list of hierarchical dictionaries representing file dependencies.
         ignored_pkgs (list): A list of packages to be ignored.
-        sys_info (dict): Dictionary containing system information.
 
     Returns:
         None
     """
-    if sys_info:
-        deps = add_info(deps, **sys_info)
-    if file_deps:
-        kwargs_len = len(
-            {
-                key: val for key, val in file_deps[0].items()
-                if val and key not in ["name", "at", "version", "deps"]
-            }
-        )
-        if kwargs_len:
-            file_deps = filter_deps_tree(file_deps, **sys_info)
     missing_pkgs = find_missing_pkgs(deps, file_deps, ignored_pkgs)
     if missing_pkgs:
         check_and_raise_error(deps, file_deps, ignored_pkgs)
 
 
-def raise_extra_error(deps, file_deps, ignored_pkgs, sys_info):
+def raise_extra_error(deps, file_deps, ignored_pkgs):
     """
     Check for extra dependencies and raise an ImportError if found.
 
@@ -169,14 +127,18 @@ def raise_extra_error(deps, file_deps, ignored_pkgs, sys_info):
         deps (list): A list of hierarchical dictionaries representing the dependency tree.
         file_deps (list): A list of hierarchical dictionaries representing file dependencies.
         ignored_pkgs (list): A list of packages to be ignored.
-        sys_info (dict): Dictionary containing system information.
 
     Returns:
         None
     """
-    if sys_info:
-        deps = add_info(deps, **sys_info)
-    if file_deps:
+    extra_pkgs = find_missing_pkgs(file_deps, deps, ignored_pkgs)
+    if extra_pkgs:
+        check_and_raise_error(file_deps, deps, ignored_pkgs)
+
+
+def process_deps_file(dep_file, sys_info):
+    with open(dep_file, "r", encoding="utf-8") as file:
+        file_deps = parse_deps_tree(file.read())
         kwargs_len = len(
             {
                 key: val for key, val in file_deps[0].items()
@@ -185,6 +147,4 @@ def raise_extra_error(deps, file_deps, ignored_pkgs, sys_info):
         )
         if kwargs_len:
             file_deps = filter_deps_tree(file_deps, **sys_info)
-    extra_pkgs = find_missing_pkgs(file_deps, deps, ignored_pkgs)
-    if extra_pkgs:
-        check_and_raise_error(file_deps, deps, ignored_pkgs)
+        return file_deps
