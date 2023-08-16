@@ -1,5 +1,5 @@
 """
-Setup file for dummy_package_manager
+Setup file for check_requirements
 """
 from __future__ import absolute_import
 import os
@@ -13,12 +13,12 @@ with open("{0}{1}README.md".format(HERE, os.sep), "r", encoding="utf-8") as read
     LONG_DESCRIPTION = readme.read()
 
 setup(
-    name="dummy_package_manager",
+    name="check_requirements",
     version="0.1.0",
-    description="A utility for creating and managing dummy Python packages with optional dependencies.",
+    description="Dependency management tools for Python packages.",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
-    url="https://github.com/eftalgezer/dummy_package_manager",
+    url="https://github.com/eftalgezer/check_requirements",
     author="Eftal Gezer",
     author_email="eftal.gezer@astrobiyoloji.org",
     classifiers=[
@@ -41,15 +41,21 @@ setup(
         "Topic :: Software Development :: Testing",
         "Topic :: Utilities"
     ],
-    keywords="dummy package, dummy, package, utility, dependencies, testing",
-    packages=["dummy_package_manager"],
+    keywords="dependency management, python packages, dependency checking, requirements, dependency tree, dependency "
+             "analysis",
+    packages=["check_requirements"],
     zip_safe=False,
     include_package_data=True,
-    install_requires=["pip"],
+    install_requires=["pipdeptree"],
     project_urls={
-        "Bug Reports": "https://github.com/eftalgezer/dummy_package_manager/issues",
-        "Source": "https://github.com/eftalgezer/dummy_package_manager",
-        "Blog": "https://beyondthearistotelian.blogspot.com/search/label/dummy_package_manager",
+        "Bug Reports": "https://github.com/eftalgezer/check_requirements/issues",
+        "Source": "https://github.com/eftalgezer/check_requirements",
+        "Blog": "https://beyondthearistotelian.blogspot.com/search/label/check_requirements",
         "Developer": "https://www.eftalgezer.com/",
+    },
+    entry_points={
+        "console_scripts": [
+            "check_requirements=check_requirements.__main__:main",
+        ]
     },
 )
