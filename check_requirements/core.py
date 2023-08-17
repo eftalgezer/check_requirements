@@ -141,27 +141,26 @@ def ignore_pkgs(deps, ignored_pkgs):
     Ignores specified packages from the dependency tree.
 
     Args:
-    deps (list): A list of hierarchical dictionaries representing the dependency tree.
-    ignored_packages (list): A list of dictionaries where each dictionary contains "name" and "version" keys for
+        deps (list): A list of hierarchical dictionaries representing the dependency tree.
+        ignored_pkgs (list): A list of dictionaries where each dictionary contains "name" and "version" keys for
                             specifying ignored packages.
 
     Returns:
-    list: The updated dependency tree with ignored packages removed.
+        list: The updated dependency tree with ignored packages removed.
     """
     updated_deps = []
     for pkg in deps:
-        if any(
+        if not any(
                 pkg["name"] == ignored["name"]
                 and (
-                        (pkg.get("version") == ignored.get("version")) if ignored.get("version") else True
+                    (pkg.get("version") == ignored.get("version")) if ignored.get("version") else True
                 )
                 for ignored in ignored_pkgs
         ):
-            updated_deps.extend(ignore_pkgs(pkg["deps"], ignored_pkgs))
-        pkg_copy = pkg.copy()
-        if pkg_copy["deps"]:
-            pkg_copy["deps"] = ignore_pkgs(pkg_copy["deps"], ignored_pkgs)
-        updated_deps.append(pkg_copy)
+            pkg_copy = pkg.copy()
+            if pkg_copy["deps"]:
+                pkg_copy["deps"] = ignore_pkgs(pkg_copy["deps"], ignored_pkgs)
+            updated_deps.append(pkg_copy)
     return updated_deps
 
 
