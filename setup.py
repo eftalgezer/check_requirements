@@ -5,11 +5,11 @@ from __future__ import absolute_import
 import os
 from setuptools import setup
 
-HERE = os.getcwd().replace("{0}setup.py".format(os.sep), "")
+HERE = os.getcwd().replace(f"{os.sep}setup.py", "")
 
 LONG_DESCRIPTION = ""
 
-with open("{0}{1}README.md".format(HERE, os.sep), "r", encoding="utf-8") as readme:
+with open(f"{HERE}{os.sep}README.md", "r", encoding="utf-8") as readme:
     LONG_DESCRIPTION = readme.read()
 
 setup(
@@ -46,7 +46,11 @@ setup(
     packages=["check_requirements"],
     zip_safe=False,
     include_package_data=True,
-    install_requires=["pipdeptree"],
+    install_requires=[
+        "pipdeptree",
+        "GitPython",
+        "PyGithub"
+    ],
     project_urls={
         "Bug Reports": "https://github.com/eftalgezer/check_requirements/issues",
         "Source": "https://github.com/eftalgezer/check_requirements",

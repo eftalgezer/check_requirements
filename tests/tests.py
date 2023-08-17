@@ -14,8 +14,8 @@ from unittest import TestCase
 from dummy_package_manager import DummyPackage
 from .helpers import _search_pattern, _read_file, _dummy_pkg_file, _pkg_file
 from .testers import get_list_tester, parse_deps_tree_tester, add_info_tester, filter_deps_tree_tester, \
-    print_deps_tree_tester, write_deps_tree_to_file_tester, is_pkg_in_subtree_tester, find_missing_pkgs_tester, \
-    check_and_raise_error_tester, main_tester
+    ignore_pkgs_tester, print_deps_tree_tester, write_deps_tree_to_file_tester, is_pkg_in_subtree_tester, \
+    find_missing_pkgs_tester, check_and_raise_error_tester, main_tester
 
 PYTHON_VERSION = ".".join(platform.python_version_tuple()[:2])
 
@@ -298,8 +298,7 @@ def test_find_missing_pkgs():
             "deps": []
         }
     ]
-    ignored_pkgs = []
-    missing_pkgs = find_missing_pkgs_tester(deps_a, deps_b, ignored_pkgs)
+    missing_pkgs = find_missing_pkgs_tester(deps_a, deps_b)
     assert isinstance(missing_pkgs, list)
     assert len(missing_pkgs) == 1
     assert missing_pkgs == [{"name": "package2", "version": "2.0", "deps": []}]
@@ -346,7 +345,8 @@ def test_find_missing_pkgs__ignored():
         {"name": "ignored_package_1", "version": "", "deps": []},
         {"name": "ignored_package_2", "version": "2.0.0", "deps": []}
     ]
-    missing_pkgs = find_missing_pkgs_tester(deps_a, deps_b, ignored_pkgs)
+    deps_a = ignore_pkgs_tester(deps_a, ignored_pkgs)
+    missing_pkgs = find_missing_pkgs_tester(deps_a, deps_b)
     assert isinstance(missing_pkgs, list)
     assert len(missing_pkgs) == 1
     assert missing_pkgs[0]["name"] == "package2"
@@ -377,8 +377,7 @@ def test_check_and_raise_error():
             "deps": []
         }
     ]
-    ignored_pkgs = []
-    check_and_raise_error_tester(deps_a, deps_b, ignored_pkgs)
+    check_and_raise_error_tester(deps_a, deps_b)
 
 
 def test_check_and_raise_error__ignored():
@@ -419,7 +418,8 @@ def test_check_and_raise_error__ignored():
         {"name": "ignored_package_1", "version": "", "deps": []},
         {"name": "ignored_package_2", "version": "2.0.0", "deps": []}
     ]
-    check_and_raise_error_tester(deps_a, deps_b, ignored_pkgs)
+    deps_a = ignore_pkgs_tester(deps_a, ignored_pkgs)
+    check_and_raise_error_tester(deps_a, deps_b)
 
 
 def test_main__help():

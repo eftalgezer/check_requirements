@@ -9,8 +9,6 @@ import os
 import sys
 from io import StringIO
 from tempfile import NamedTemporaryFile
-from subprocess import run
-from shlex import split
 import re
 
 

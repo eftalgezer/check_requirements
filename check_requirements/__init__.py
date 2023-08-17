@@ -15,5 +15,7 @@ __copyright__ = "Copyright 2023, Eftal Gezer"
 __version__ = "0.1.0"
 
 
-from .core import get_list, parse_deps_tree, add_info, filter_deps_tree, print_deps_tree, write_deps_tree_to_file, \
-    is_pkg_in_subtree, find_missing_pkgs, check_and_raise_error, format_full_version
+from .core import get_list, parse_deps_tree, add_info, filter_deps_tree, ignore_pkgs, print_deps_tree, \
+    write_deps_tree_to_file, is_pkg_in_subtree, find_missing_pkgs, check_and_raise_error, format_full_version
+from .git_push import push_reqs_file
+from .github_pull import gh_pull_req_for_reqs_file

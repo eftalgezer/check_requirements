@@ -73,72 +73,68 @@ def list_file(deps, file_path):
     write_deps_tree_to_file(file_path, deps)
 
 
-def check_missing(deps, file_deps, ignored_pkgs):
+def check_missing(deps, file_deps):
     """
     Check for missing dependencies and print a report.
 
     Args:
         deps (list): A list of hierarchical dictionaries representing the dependency tree.
         file_deps (list): A list of hierarchical dictionaries representing file dependencies.
-        ignored_pkgs (list): A list of packages to be ignored.
 
     Returns:
         None
     """
-    missing_pkgs = find_missing_pkgs(deps, file_deps, ignored_pkgs)
+    missing_pkgs = find_missing_pkgs(deps, file_deps)
     for pkg in missing_pkgs:
         print(f"Missing: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
 
 
-def check_extra(deps, file_deps, ignored_pkgs):
+def check_extra(deps, file_deps):
     """
     Check for extra dependencies and print a report.
 
     Args:
         deps (list): A list of hierarchical dictionaries representing the dependency tree.
         file_deps (list): A list of hierarchical dictionaries representing file dependencies.
-        ignored_pkgs (list): A list of packages to be ignored.
 
     Returns:
         None
     """
-    extra_pkgs = find_missing_pkgs(file_deps, deps, ignored_pkgs)
+    extra_pkgs = find_missing_pkgs(file_deps, deps)
     for pkg in extra_pkgs:
         print(f"Extra: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
 
 
-def raise_missing_error(deps, file_deps, ignored_pkgs):
+def raise_missing_error(deps, file_deps):
     """
     Check for missing dependencies and raise an ImportError if found.
 
     Args:
         deps (list): A list of hierarchical dictionaries representing the dependency tree.
         file_deps (list): A list of hierarchical dictionaries representing file dependencies.
-        ignored_pkgs (list): A list of packages to be ignored.
 
     Returns:
         None
     """
-    missing_pkgs = find_missing_pkgs(deps, file_deps, ignored_pkgs)
+    missing_pkgs = find_missing_pkgs(deps, file_deps)
     if missing_pkgs:
-        check_and_raise_error(deps, file_deps, ignored_pkgs)
+        check_and_raise_error(deps, file_deps)
 
 
-def raise_extra_error(deps, file_deps, ignored_pkgs):
+def raise_extra_error(deps, file_deps):
     """
     Check for extra dependencies and raise an ImportError if found.
 
     Args:
         deps (list): A list of hierarchical dictionaries representing the dependency tree.
         file_deps (list): A list of hierarchical dictionaries representing file dependencies.
-        ignored_pkgs (list): A list of packages to be ignored.
 
     Returns:
         None
     """
-    extra_pkgs = find_missing_pkgs(file_deps, deps, ignored_pkgs)
+    extra_pkgs = find_missing_pkgs(file_deps, deps)
     if extra_pkgs:
-        check_and_raise_error(file_deps, deps, ignored_pkgs)
+        check_and_raise_error(file_deps, deps)
 
 
 def process_deps_file(dep_file, sys_info):

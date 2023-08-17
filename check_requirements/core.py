@@ -6,21 +6,26 @@ This module provides functions for managing and analyzing Python package depende
 Functions:
  - get_list(): Returns a list of installed packages and their dependencies as text.
  - parse_deps_tree(lines: str): Parses the dependency tree from lines and returns a hierarchical dictionary.
- - add_info(deps: dict): Adds Python version and system platform information to the dependency tree.
- - filter_deps_tree(deps, **kwargs): Filters the dependency tree based on provided keyword arguments.
- - print_deps_tree(deps: dict, indent: int = 0): Prints the dependency tree to the console.
+ - add_info(deps: list): Adds Python version and system platform information to the dependency tree.
+ - filter_deps_tree(deps: list, **kwargs): Filters the dependency tree based on provided keyword arguments.
+ - ignore_pkgs(deps: list, ignored_pkgs: list): Ignores specified packages from the dependency tree.
+ - print_deps_tree(deps: list, indent: int = 0): Prints the dependency tree to the console.
  - write_deps_tree_to_file(file_path: str, deps: dict, indent: int = 0): Writes the dependency tree to a file.
- - is_pkg_in_subtree(pkg: dict, deps: dict): Checks if a package exists in a dependency subtree.
- - find_missing_pkgs(deps_a: dict, deps_b: dict, ignored_pkgs: list): Finds missing packages in deps_a compared to
- deps_b, ignoring specified packages.
- - check_and_raise_error(deps_a: dict, deps_b: dict, ignored_pkgs: list): Raises ImportError if missing packages are
-found in deps_a compared to deps_b, ignoring specified packages.
+ - is_pkg_in_subtree(pkg: dict, deps: list): Checks if a package exists in a dependency subtree.
+ - find_missing_pkgs(deps_a: list, deps_b: list): Finds missing packages in deps_a compared to
+ deps_b.
+ - check_and_raise_error(deps_a: list, deps_b: list): Raises ImportError if missing packages are
+found in deps_a compared to deps_b.
+ - update_reqs(file_path: str, deps: list, sys_info: dict = None, missing_pkgs: list = None, extra_pkgs: list = None):
+ Updates the current requirements file based on provided missing and extra packages and system information.
+
  -  format_full_version(): Formats the Python interpreter's full version information.
 """
-
+import io
 import sys
 from subprocess import Popen, PIPE
 import shlex
+import re
 
 
 def get_list():
@@ -95,7 +100,7 @@ def add_info(deps, **kwargs):
     Adds given system information to the dependency tree.
 
     Args:
-    deps (dict): A hierarchical dictionary representing the dependency tree.
+    deps (list): A hierarchical dictionary representing the dependency tree.
 
     Returns:
     list: The updated dependency tree with added information.
@@ -131,12 +136,41 @@ def filter_deps_tree(deps, **kwargs):
     return [pkg for pkg in deps if all(pkg.get(key) == val for key, val in kwargs.items() if pkg.get(key))]
 
 
+def ignore_pkgs(deps, ignored_pkgs):
+    """
+    Ignores specified packages from the dependency tree.
+
+    Args:
+    deps (list): A list of hierarchical dictionaries representing the dependency tree.
+    ignored_packages (list): A list of dictionaries where each dictionary contains "name" and "version" keys for
+                            specifying ignored packages.
+
+    Returns:
+    list: The updated dependency tree with ignored packages removed.
+    """
+    updated_deps = []
+    for pkg in deps:
+        if any(
+                pkg["name"] == ignored["name"]
+                and (
+                        (pkg.get("version") == ignored.get("version")) if ignored.get("version") else True
+                )
+                for ignored in ignored_pkgs
+        ):
+            updated_deps.extend(ignore_pkgs(pkg["deps"], ignored_pkgs))
+        pkg_copy = pkg.copy()
+        if pkg_copy["deps"]:
+            pkg_copy["deps"] = ignore_pkgs(pkg_copy["deps"], ignored_pkgs)
+        updated_deps.append(pkg_copy)
+    return updated_deps
+
+
 def print_deps_tree(deps, indent=0):
     """
     Prints the dependency tree to the console.
 
     Args:
-    deps (dict): A hierarchical dictionary representing the dependency tree.
+    deps (list): A hierarchical dictionary representing the dependency tree.
     indent (int, optional): Indentation level for formatting. Defaults to 0.
     """
     for pkg in deps:
@@ -159,16 +193,17 @@ def print_deps_tree(deps, indent=0):
                 print_deps_tree(pkg["deps"], indent + 1)
 
 
-def write_deps_tree_to_file(file_path, deps):
+def write_deps_tree_to_file(file_path, deps, mode="w"):
     """
     Writes the dependency tree to a file.
 
     Args:
     file_path (str): Path to the output file.
-    deps (dict): A hierarchical dictionary representing the dependency tree.
+    deps (list): A hierarchical dictionary representing the dependency tree.
+    mode (str): Writing mode.
     """
     original_stdout = sys.stdout
-    with open(file_path, "w", encoding="utf-8") as sys.stdout:
+    with open(file_path, mode, encoding="utf-8") as sys.stdout:
         print_deps_tree(deps)
     sys.stdout = original_stdout
 
@@ -179,7 +214,7 @@ def is_pkg_in_subtree(pkg, deps):
 
     Args:
     pkg (dict): A dictionary representing the package to check.
-    deps (dict): A hierarchical dictionary representing the dependency tree.
+    deps (list): A hierarchical dictionary representing the dependency tree.
 
     Returns:
     bool: True if the package exists in the subtree, False otherwise.
@@ -197,55 +232,102 @@ def is_pkg_in_subtree(pkg, deps):
     return False
 
 
-def find_missing_pkgs(deps_a, deps_b, ignored_pkgs=None):
+def find_missing_pkgs(deps_a, deps_b):
     """
-    Finds missing packages in deps_a compared to deps_b, ignoring specified packages.
+    Finds missing packages in deps_a compared to deps_b.
 
     Args:
-    deps_a (dict): A hierarchical dictionary representing the first dependency tree.
-    deps_b (dict): A hierarchical dictionary representing the second dependency tree.
-    ignored_pkgs (list): A list of packages to be ignored.
+    deps_a (list): A hierarchical dictionary representing the first dependency tree.
+    deps_b (list): A hierarchical dictionary representing the second dependency tree.
 
     Returns:
     list: A list of missing packages.
     """
-    if not ignored_pkgs:
-        ignored_pkgs = []
+
     missing_pkgs = []
     for pkg_a in deps_a:
-        if \
-                any(
-                    pkg_a["name"] == ignored["name"] and
-                    ((pkg_a.get("version") == ignored.get("version")) if ignored.get("version") else True)
-                    for ignored in ignored_pkgs
-                ):
-            missing_pkgs.extend(find_missing_pkgs(pkg_a["deps"], deps_b, ignored_pkgs))
-        elif not is_pkg_in_subtree(pkg_a, deps_b):
+        if not is_pkg_in_subtree(pkg_a, deps_b):
             missing_pkgs.append(pkg_a)
-        missing_pkgs.extend(find_missing_pkgs(pkg_a["deps"], deps_b, ignored_pkgs))
+        missing_pkgs.extend(find_missing_pkgs(pkg_a["deps"], deps_b))
     return list({name["name"]: name for name in missing_pkgs}.values())
 
 
-def check_and_raise_error(deps_a, deps_b, ignored_pkgs=None):
+def check_and_raise_error(deps_a, deps_b):
     """
-    Raises ImportError if missing packages are found in deps_a compared to deps_b, ignoring specified packages.
+    Raises ImportError if missing packages are found in deps_a compared to deps_b.
 
     Args:
-    deps_a (dict): A hierarchical dictionary representing the first dependency tree.
-    deps_b (dict): A hierarchical dictionary representing the second dependency tree.
-    ignored_pkgs (list): A list of packages to be ignored.
+    deps_a (list): A hierarchical dictionary representing the first dependency tree.
+    deps_b (list): A hierarchical dictionary representing the second dependency tree.
 
     Raises:
     ImportError: If missing packages are found.
     """
-    if not ignored_pkgs:
-        ignored_pkgs = []
-    missing_pkgs = find_missing_pkgs(deps_a, deps_b, ignored_pkgs)
+
+    missing_pkgs = find_missing_pkgs(deps_a, deps_b)
     if missing_pkgs:
         err_msg = "Missing packages:\n"
         for pkg in missing_pkgs:
             err_msg += f"{pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}\n"
         raise ImportError(err_msg)
+
+
+def update_reqs(file_path, deps, sys_info=None, missing_pkgs=None, extra_pkgs=None):
+    """
+    Updates the current requirements file based on provided missing and extra packages and system information.
+
+    Args:
+    file_path (str): Path to the requirements file.
+    deps (list): A list of hierarchical dictionaries representing the dependency tree.
+    missing_pkgs (list): A list of missing packages to be updated in the requirements file.
+    extra_pkgs (list): A list of extra packages to be removed from the requirements file.
+    sys_info (dict) (optional): Dictionary containing system information to be added to the dependencies.
+
+    Returns:
+    None
+
+    Raises:
+    AttributeError: Neither missing_pkgs nor extra_pkgs is given.
+
+    """
+    if not any([missing_pkgs, extra_pkgs]):
+        raise AttributeError("At least one of 'missing_pkgs' or 'extra_pkgs' should be given")
+    with open(file_path, "r", encoding="utf-8") as file:
+        lines = file.readlines()
+        if missing_pkgs:
+            lines = [line if all(
+                re.search(rf"{re.escape(key)}\s*==\s*{re.escape(val)}", line)
+                for key, val in sys_info.items()) else "here" for line in lines] \
+                if sys_info \
+                else ["here"]
+            lines = list(set(lines))
+            original_stdout = sys.stdout
+            sys.stdout = io.StringIO()
+            print_deps_tree(deps)
+            lines_to_insert = sys.stdout.getvalue().split("\n")
+            sys.stdout = original_stdout
+            for i, line in enumerate(lines_to_insert):
+                lines.insert(lines.index("here") + i, line)
+            lines = [line for line in lines if line != "here"]
+        if extra_pkgs:
+            for line in lines:
+                pkg = parse_deps_tree(line)[0]
+                if sys_info:
+                    pkg = pkg \
+                        if ((key == val
+                             for key in pkg if key not in ["name", "at", "version", "deps"])
+                            for _, val in sys_info.values()) \
+                        else None
+                if pkg:
+                    for extra_pkg in extra_pkgs:
+                        if pkg["name"] == extra_pkg["name"] \
+                                and pkg.get("at") == extra_pkg.get("at") \
+                                and pkg.get("version") == extra_pkg.get("version"):
+                            lines[lines.index(line)] = "remove"
+                            break
+            lines = [line for line in lines if line != "remove"]
+    with open(file_path, "w", encoding="utf-8") as file:
+        file.writelines(lines)
 
 
 def format_full_version():

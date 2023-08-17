@@ -10,7 +10,7 @@ import os
 from tempfile import NamedTemporaryFile
 from unittest.mock import patch
 import pytest
-from check_requirements import get_list, parse_deps_tree, add_info, filter_deps_tree, print_deps_tree, \
+from check_requirements import get_list, parse_deps_tree, add_info, filter_deps_tree, ignore_pkgs, print_deps_tree, \
     write_deps_tree_to_file, is_pkg_in_subtree, find_missing_pkgs, check_and_raise_error
 from .helpers import _capture_stdout
 
@@ -50,6 +50,10 @@ def filter_deps_tree_tester(deps, **kwargs):
     return filter_deps_tree(deps, **kwargs)
 
 
+def ignore_pkgs_tester(deps, ignored_pkgs):
+    return ignore_pkgs(deps, ignored_pkgs)
+
+
 def print_deps_tree_tester(deps):
     """
     Tester function for print_deps_tree. Simulates printing the dependency tree structure.
@@ -77,19 +81,19 @@ def is_pkg_in_subtree_tester(pkg, deps):
     return is_pkg_in_subtree(pkg, deps)
 
 
-def find_missing_pkgs_tester(deps_a, deps_b, ignored_pkgs):
+def find_missing_pkgs_tester(deps_a, deps_b):
     """
     Tester function for find_missing_pkgs. Simulates identifying missing packages between dependency trees.
     """
-    return find_missing_pkgs(deps_a, deps_b, ignored_pkgs)
+    return find_missing_pkgs(deps_a, deps_b)
 
 
-def check_and_raise_error_tester(deps_a, deps_b, ignored_pkgs):
+def check_and_raise_error_tester(deps_a, deps_b):
     """
     Tester function for check_and_raise_error. Simulates checking and raising errors for missing or extra dependencies.
     """
     with pytest.raises(ImportError):
-        check_and_raise_error(deps_a, deps_b, ignored_pkgs)
+        check_and_raise_error(deps_a, deps_b)
 
 
 def main_tester(command):

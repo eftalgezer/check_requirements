@@ -39,7 +39,7 @@ import os
 import sys
 import platform
 import argparse
-from .core import get_list, parse_deps_tree, add_info, format_full_version
+from .core import get_list, parse_deps_tree, add_info, ignore_pkgs, format_full_version
 from .cli import list_deps, list_file, check_missing, check_extra, raise_missing_error, raise_extra_error, \
     process_deps_file
 
@@ -76,7 +76,6 @@ def main():
         "implementation_version": format_full_version()
     }
     deps = parse_deps_tree(get_list())
-    ignored_pkgs = []
     file_deps = None
     if args.with_info and (args.list or args.list_file):
         sys_info_req = {key: sys_info[key] for key in args.with_info}
@@ -85,8 +84,10 @@ def main():
         with open(args.ignore, 'r', encoding="utf-8") as file:
             ignore_lines = file.read()
             ignored_pkgs = parse_deps_tree(ignore_lines)
+        deps = ignore_pkgs(deps, ignored_pkgs)
     elif args.ignore_packages:
         ignored_pkgs = parse_deps_tree(f"{chr(10).join(args.ignore_packages)}\n")
+        deps = ignore_pkgs(deps, ignored_pkgs)
     if args.check_missing or args.check_extra:
         dep_file = [check for check in [args.check_missing, args.check_extra] if check][0]
         if dep_file:
@@ -96,13 +97,13 @@ def main():
     if args.list_file:
         list_file(deps, args.list_file)
     if args.check_missing:
-        check_missing(deps, file_deps, ignored_pkgs)
+        check_missing(deps, file_deps)
     if args.check_extra:
-        check_extra(deps, file_deps, ignored_pkgs)
+        check_extra(deps, file_deps)
     if args.raise_missing_error and args.check_missing:
-        raise_missing_error(deps, file_deps, ignored_pkgs)
+        raise_missing_error(deps, file_deps)
     if args.raise_extra_error and args.check_extra:
-        raise_extra_error(deps, file_deps, ignored_pkgs)
+        raise_extra_error(deps, file_deps)
 
 
 if __name__ == "__main__":
