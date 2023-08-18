@@ -86,7 +86,9 @@ def check_missing(deps, file_deps):
     """
     missing_pkgs = find_missing_pkgs(deps, file_deps)
     for pkg in missing_pkgs:
-        print(f"Missing: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
+        print(f"Missing: {pkg['name']}"
+              f"{f''' @ {pkg.get('at')}''' if pkg.get('at') else ''}"
+              f"{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
 
 
 def check_extra(deps, file_deps):
@@ -102,7 +104,9 @@ def check_extra(deps, file_deps):
     """
     extra_pkgs = find_missing_pkgs(file_deps, deps)
     for pkg in extra_pkgs:
-        print(f"Extra: {pkg['name']}{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
+        print(f"Extra: {pkg['name']}"
+              f"{f''' @ {pkg.get('at')}''' if pkg.get('at') else ''}"
+              f"{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
 
 
 def raise_missing_error(deps, file_deps):
