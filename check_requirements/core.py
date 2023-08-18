@@ -153,7 +153,10 @@ def ignore_pkgs(deps, ignored_pkgs):
         if not any(
                 pkg["name"] == ignored["name"]
                 and (
-                    (pkg.get("version") == ignored.get("version")) if ignored.get("version") else True
+                        (pkg.get("at") == ignored.get("at")) if ignored.get("at") else True
+                )
+                and (
+                        (pkg.get("version") == ignored.get("version")) if ignored.get("version") else True
                 )
                 for ignored in ignored_pkgs
         ):
@@ -313,8 +316,8 @@ def update_reqs(file_path, deps, sys_info=None, missing_pkgs=None, extra_pkgs=No
                 pkg = parse_deps_tree(line)[0]
                 if sys_info:
                     pkg = pkg \
-                        if ((key == val
-                             for key in pkg if key not in ["name", "at", "version", "deps"])
+                        if (all(key == val
+                                for key in pkg if key not in ["name", "at", "version", "deps"])
                             for _, val in sys_info.values()) \
                         else None
                 if pkg:

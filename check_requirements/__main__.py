@@ -77,6 +77,7 @@ def main():
     }
     deps = parse_deps_tree(get_list())
     file_deps = None
+    ignored_pkgs = None
     if args.with_info and (args.list or args.list_file):
         sys_info_req = {key: sys_info[key] for key in args.with_info}
         deps = add_info(deps, **sys_info_req)
@@ -84,14 +85,18 @@ def main():
         with open(args.ignore, 'r', encoding="utf-8") as file:
             ignore_lines = file.read()
             ignored_pkgs = parse_deps_tree(ignore_lines)
-        deps = ignore_pkgs(deps, ignored_pkgs)
+            if not args.check_extra:
+                deps = ignore_pkgs(deps, ignored_pkgs)
     elif args.ignore_packages:
         ignored_pkgs = parse_deps_tree(f"{chr(10).join(args.ignore_packages)}\n")
-        deps = ignore_pkgs(deps, ignored_pkgs)
+        if not args.check_extra:
+            deps = ignore_pkgs(deps, ignored_pkgs)
     if args.check_missing or args.check_extra:
         dep_file = [check for check in [args.check_missing, args.check_extra] if check][0]
         if dep_file:
             file_deps = process_deps_file(dep_file, sys_info)
+            if args.check_extra:
+                file_deps = ignored_pkgs(file_deps, ignored_pkgs)
     if args.list:
         list_deps(deps)
     if args.list_file:
