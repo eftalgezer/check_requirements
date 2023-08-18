@@ -150,7 +150,7 @@ def ignore_pkgs(deps, ignored_pkgs):
     """
     updated_deps = []
     for pkg in deps:
-        if not any(
+        if any(
                 pkg["name"] == ignored["name"]
                 and (
                         (pkg.get("at") == ignored.get("at")) if ignored.get("at") else True
@@ -160,6 +160,8 @@ def ignore_pkgs(deps, ignored_pkgs):
                 )
                 for ignored in ignored_pkgs
         ):
+            updated_deps.extend(ignore_pkgs(pkg["deps"], ignored_pkgs))
+        else:
             pkg_copy = pkg.copy()
             if pkg_copy["deps"]:
                 pkg_copy["deps"] = ignore_pkgs(pkg_copy["deps"], ignored_pkgs)
