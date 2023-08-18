@@ -95,7 +95,7 @@ def main():
         dep_file = [check for check in [args.check_missing, args.check_extra] if check][0]
         if dep_file:
             file_deps = process_deps_file(dep_file, sys_info)
-            if args.check_extra and file_deps:
+            if args.check_extra and ignored_pkgs:
                 file_deps = ignore_pkgs(file_deps, ignored_pkgs)
     if args.list:
         list_deps(deps)
