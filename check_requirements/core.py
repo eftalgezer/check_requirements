@@ -327,9 +327,9 @@ def update_reqs(file_path, deps, sys_info=None, missing_pkgs=None, extra_pkgs=No
                         if pkg["name"] == extra_pkg["name"] \
                                 and pkg.get("at") == extra_pkg.get("at") \
                                 and pkg.get("version") == extra_pkg.get("version"):
-                            lines[lines.index(line)] = "remove"
+                            lines[lines.index(line)] = "remove this"
                             break
-            lines = [line for line in lines if line != "remove"]
+            lines = [line for line in lines if line != "remove this"]
     with open(file_path, "w", encoding="utf-8") as file:
         file.writelines(lines)
 

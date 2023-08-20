@@ -39,8 +39,10 @@ import os
 import sys
 import platform
 import argparse
-from .core import get_list, parse_deps_tree, add_info, ignore_pkgs, format_full_version
-from .cli import list_deps, list_file, check_missing, check_extra, raise_missing_error, raise_extra_error, \
+from .core import get_list, parse_deps_tree, add_info, ignore_pkgs, update_reqs, format_full_version
+from .git_push import push_reqs_file
+from .github_pull import gh_pull_req_for_reqs_file
+from .cli import list_deps, output, check_missing, check_extra, raise_missing_error, raise_extra_error, \
     process_deps_file
 
 
@@ -51,13 +53,20 @@ def main():
     """
     parser = argparse.ArgumentParser(description="check_requirements")
     parser.add_argument("--list", "-l", action="store_true", help="List dependencies to console")
-    parser.add_argument("--list-file", "-lf", type=str, help="Save dependencies to a file")
-    parser.add_argument("--check-missing", "-cm", type=str, help="Check for missing dependencies and print")
-    parser.add_argument("--check-extra", "-ce", type=str, help="Check for extra dependencies and print")
+    parser.add_argument("--output", "-o", type=str, help="Save dependencies to a file")
+    parser.add_argument("--file", "-f", type=str, help="Existing requirements file")
+    parser.add_argument("--check-missing", "-cm", action="store_true", help="Check for missing dependencies and print")
+    parser.add_argument("--check-extra", "-ce", action="store_true", help="Check for extra dependencies and print")
     parser.add_argument("--raise-missing-error", "-rme", action="store_true", help="Check for missing dependencies "
                                                                                    "and raise error")
     parser.add_argument("--raise-extra-error", "-ree", action="store_true", help="Check for extra dependencies and "
                                                                                  "raise error")
+    parser.add_argument("--update", "-u", action="store_true", help="Update a requirements file")
+    parser.add_argument("--push", "-p", nargs="+", help="Push a requirements file to a Git repository. Usage: --push "
+                                                        "<file path> <git repo> <git remote url (optional)>")
+    parser.add_argument("--github-pull", "-gh", nargs="+", help="Create a pull request on GitHub. Usage: "
+                                                                "--github-pull <github_token> <repository name> <base "
+                                                                "branch>")
     parser.add_argument("--ignore", "-i", type=str, help="File containing ignored packages")
     parser.add_argument("--ignore-packages", "-ip", nargs="+", help="List of packages to ignore")
     parser.add_argument("--with-info", "-wi", nargs="+", help="Include requested system information")
@@ -78,7 +87,7 @@ def main():
     deps = parse_deps_tree(get_list())
     file_deps = None
     ignored_pkgs = None
-    if args.with_info and (args.list or args.list_file):
+    if args.with_info and (args.list or args.output):
         sys_info_req = {key: sys_info[key] for key in args.with_info}
         deps = add_info(deps, **sys_info_req)
     if args.ignore:
@@ -91,24 +100,35 @@ def main():
         ignored_pkgs = parse_deps_tree(f"{chr(10).join(args.ignore_packages)}\n")
         if not args.check_extra:
             deps = ignore_pkgs(deps, ignored_pkgs)
-    if args.check_missing or args.check_extra:
-        dep_file = [check for check in [args.check_missing, args.check_extra] if check][0]
-        if dep_file:
-            file_deps = process_deps_file(dep_file, sys_info)
-            if args.check_extra and ignored_pkgs:
-                file_deps = ignore_pkgs(file_deps, ignored_pkgs)
+    if args.file:
+        file_deps = process_deps_file(args.file, sys_info)
+        if args.check_extra and ignored_pkgs:
+            file_deps = ignore_pkgs(file_deps, ignored_pkgs)
     if args.list:
         list_deps(deps)
-    if args.list_file:
-        list_file(deps, args.list_file)
-    if args.check_missing:
-        check_missing(deps, file_deps)
-    if args.check_extra:
-        check_extra(deps, file_deps)
-    if args.raise_missing_error and args.check_missing:
+    if args.output:
+        output(deps, args.output)
+    missing_pkgs = check_missing(deps, file_deps) if args.check_missing else None
+    extra_pkgs = check_extra(deps, file_deps) if args.check_extra else None
+    if args.raise_missing_error:
         raise_missing_error(deps, file_deps)
-    if args.raise_extra_error and args.check_extra:
+    if args.raise_extra_error:
         raise_extra_error(deps, file_deps)
+    if args.update:
+        update_reqs(args.update, deps, sys_info=sys_info, missing_pkgs=missing_pkgs, extra_pkgs=extra_pkgs)
+    if args.push:
+        git_remote_url = args.push[2] if len(args.push) > 2 else None
+        push_reqs_file(args.push[0], args.push[1], "update" if args.update else "create", git_remote_url)
+    if args.github_pull:
+        gh_pull_req_for_reqs_file(
+            args.github_pull[0],
+            args.github_pull[1],
+            args.github_pull[2],
+            "update" if args.update else "create",
+            missing_pkgs=missing_pkgs,
+            extra_pkgs=extra_pkgs,
+            sys_info=sys_info
+        )
 
 
 if __name__ == "__main__":

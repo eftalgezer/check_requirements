@@ -59,7 +59,7 @@ def list_deps(deps):
     print_deps_tree(deps)
 
 
-def list_file(deps, file_path):
+def output(deps, file_path):
     """
     Save dependencies to a file.
 
@@ -89,6 +89,7 @@ def check_missing(deps, file_deps):
         print(f"Missing: {pkg['name']}"
               f"{f''' @ {pkg.get('at')}''' if pkg.get('at') else ''}"
               f"{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
+    return missing_pkgs
 
 
 def check_extra(deps, file_deps):
@@ -107,6 +108,7 @@ def check_extra(deps, file_deps):
         print(f"Extra: {pkg['name']}"
               f"{f''' @ {pkg.get('at')}''' if pkg.get('at') else ''}"
               f"{f''' == {pkg.get('version')}''' if pkg.get('version') else ''}")
+    return extra_pkgs
 
 
 def raise_missing_error(deps, file_deps):
