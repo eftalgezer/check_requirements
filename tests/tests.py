@@ -463,20 +463,20 @@ def test_main__list_with_info():
     )
 
 
-def test_main__list_file():
+def test_main__output():
     """
     Test saving dependencies to a file using the main script.
     """
-    main_tester("check_requirements -lf output.txt")
+    main_tester("check_requirements -o output.txt")
     assert _search_pattern(_read_file("output.txt"), r"([^\s]+) == [^\n]+", re.DOTALL)
     os.remove("output.txt")
 
 
-def test_main__list_file_with_info():
+def test_main__output_with_info():
     """
     Test saving dependencies with additional information to a file using the main script.
     """
-    main_tester("check_requirements -lf output.txt -wi sys_platform python_version")
+    main_tester("check_requirements -o output.txt -wi sys_platform python_version")
     assert _search_pattern(
         _read_file("output.txt"),
         r"([\w-]+) == [\d.]+; sys_platform == \w+ and python_version == \d\.\d{1,2}",
@@ -491,7 +491,7 @@ def test_main__check_missing():
     """
     with DummyPackage("package1") as dummy_pkg:
         dummy_pkg.install()
-        assert "package1" in main_tester("check_requirements -cm requirements.txt")
+        assert "package1" in main_tester("check_requirements -cm -f requirements.txt")
 
 
 def test_main__check_missing_ignore():
@@ -501,7 +501,7 @@ def test_main__check_missing_ignore():
     with DummyPackage("package1", requirements=["package2"]) as dummy_pkg:
         dummy_pkg.install()
         with _pkg_file(["package1"]) as ignored:
-            output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name}")
+            output = main_tester(f"check_requirements -cm -f requirements.txt -i {ignored.file.name}")
             assert "package1" not in output
             assert "package2" in output
 
@@ -512,7 +512,7 @@ def test_main__check_missing_ignore_packages():
     """
     with DummyPackage("package1", requirements=["package2"]) as dummy_pkg:
         dummy_pkg.install()
-        output = main_tester("check_requirements -cm requirements.txt -ip package1")
+        output = main_tester("check_requirements -cm -f requirements.txt -ip package1")
         assert "package1" not in output
         assert "package2" in output
 
@@ -526,7 +526,7 @@ def test_main__check_missing_ignore__2():
             dummy_pkg_1.install()
             dummy_pkg_2.install()
             with _pkg_file(["package1"]) as ignored:
-                output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name}")
+                output = main_tester(f"check_requirements -cm -f requirements.txt -i {ignored.file.name}")
                 assert "package1" not in output
                 assert "package2" in output
 
@@ -539,7 +539,7 @@ def test_main__check_missing_ignore_packages__2():
         with DummyPackage("package2") as dummy_pkg_2:
             dummy_pkg_1.install()
             dummy_pkg_2.install()
-            output = main_tester("check_requirements -cm requirements.txt -ip package1")
+            output = main_tester("check_requirements -cm -f requirements.txt -ip package1")
             assert "package1" not in output
             assert "package2" in output
 
@@ -549,7 +549,7 @@ def test_main__check_extra():
     Test checking for extra dependencies using the main script.
     """
     with _dummy_pkg_file(1) as dummy:
-        output = main_tester(f"check_requirements -ce {dummy.file.name}")
+        output = main_tester(f"check_requirements -ce -f {dummy.file.name}")
         assert "package1" in output
 
 
@@ -559,7 +559,7 @@ def test_main__check_extra_ignore():
     """
     with _dummy_pkg_file(1) as dummy_to_ignore:
         with _dummy_pkg_file(2) as dummy_to_extra:
-            output = main_tester(f"check_requirements -ce {dummy_to_extra.file.name} -i {dummy_to_ignore.file.name}")
+            output = main_tester(f"check_requirements -ce -f {dummy_to_extra.file.name} -i {dummy_to_ignore.file.name}")
             assert "package1" not in output
             assert "package2" in output
 
@@ -569,7 +569,7 @@ def test_main__check_extra_ignore_packages():
     Test if the main function correctly raises ImportError for missing dependencies while ignoring specified packages.
     """
     with _dummy_pkg_file(2) as dummy_to_extra:
-        output = main_tester(f"check_requirements -ce {dummy_to_extra.file.name} -ip package1")
+        output = main_tester(f"check_requirements -ce -f {dummy_to_extra.file.name} -ip package1")
         assert "package1" not in output
         assert "package2" in output
 
@@ -581,7 +581,7 @@ def test_main__raise_missing_error():
     with DummyPackage("package1") as dummy_pkg:
         dummy_pkg.install()
         with TestCase().assertRaises(ImportError):
-            assert "package1" in main_tester("check_requirements -cm requirements.txt -rme")
+            assert "package1" in main_tester("check_requirements -f requirements.txt -rme")
 
 
 def test_main__raise_missing_error_ignore():
@@ -592,7 +592,7 @@ def test_main__raise_missing_error_ignore():
         dummy_pkg.install()
         with _pkg_file(["package1 == 0.1.0"]) as ignored:
             with TestCase().assertRaises(ImportError):
-                output = main_tester(f"check_requirements -cm requirements.txt -i {ignored.file.name} -rme")
+                output = main_tester(f"check_requirements -f requirements.txt -i {ignored.file.name} -rme")
                 assert "package1 == 0.1.0" not in output
                 assert "package2 == 0.1.0" in output
 
@@ -604,7 +604,7 @@ def test_main__raise_missing_error_ignore_packages():
     with DummyPackage("package1", requirements=["package2"]) as dummy_pkg:
         dummy_pkg.install()
         with TestCase().assertRaises(ImportError):
-            output = main_tester("check_requirements -cm requirements.txt -ip package1==0.1.0 -rme")
+            output = main_tester("check_requirements -f requirements.txt -ip package1==0.1.0 -rme")
             assert "package1 == 0.1.0" not in output
             assert "package2 == 0.1.0" in output
 
@@ -616,7 +616,7 @@ def test_main__raise_extra_error():
     case = TestCase()
     with _dummy_pkg_file(1) as dummy:
         with case.assertRaises(ImportError):
-            assert "package1" in main_tester(f"check_requirements -ce {dummy.file.name} -ree")
+            assert "package1" in main_tester(f"check_requirements -f {dummy.file.name} -ree")
 
 
 def test_main__raise_extra_error_ignore():
@@ -628,7 +628,7 @@ def test_main__raise_extra_error_ignore():
         with _dummy_pkg_file(2) as dummy_to_extra:
             with case.assertRaises(ImportError):
                 output = main_tester(
-                    f"check_requirements -ce {dummy_to_extra.file.name} -i {dummy_to_ignore.file.name} -ree"
+                    f"check_requirements -f {dummy_to_extra.file.name} -i {dummy_to_ignore.file.name} -ree"
                 )
                 assert "package1" not in output
                 assert "package2" in output
@@ -642,6 +642,6 @@ def test_main__raise_extra_error_ignore_packages():
     case = TestCase()
     with _dummy_pkg_file(2) as dummy_to_extra:
         with case.assertRaises(ImportError):
-            output = main_tester(f"check_requirements -ce {dummy_to_extra.file.name} -ip package1 -ree")
+            output = main_tester(f"check_requirements -f {dummy_to_extra.file.name} -ip package1 -ree")
             assert "package1" not in output
             assert "package2" in output
