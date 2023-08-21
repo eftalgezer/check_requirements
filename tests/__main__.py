@@ -26,8 +26,8 @@ from .tests import (test_get_list,
                     test_main__help,
                     test_main__list,
                     test_main__list_with_info,
-                    test_main__list_file,
-                    test_main__list_file_with_info,
+                    test_main__output,
+                    test_main__output_with_info,
                     test_main__check_missing,
                     test_main__check_missing_ignore,
                     test_main__check_missing_ignore_packages,
@@ -57,8 +57,8 @@ if __name__ == "__main__":
     test_main__help()
     test_main__list()
     test_main__list_with_info()
-    test_main__list_file()
-    test_main__list_file_with_info()
+    test_main__output()
+    test_main__output_with_info()
     test_main__check_missing()
     test_main__check_missing_ignore()
     test_main__check_missing_ignore_packages()
