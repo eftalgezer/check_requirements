@@ -64,7 +64,7 @@ flake8==6.1.0; python_version==3.11 and sys_platform==linux
   mccabe==0.7.0; python_version==3.11 and sys_platform==linux
   pycodestyle==2.11.0; python_version==3.11 and sys_platform==linux
   pyflakes==3.1.0; python_version==3.11 and sys_platform==linux
-pip==23.1.2; python_version==3.11 and sys_platform==linux
+pip>=23.3; python_version==3.11 and sys_platform==linux
 pytest==7.4.0; python_version==3.11 and sys_platform==linux
   iniconfig==2.0.0; python_version==3.11 and sys_platform==linux
   packaging==23.1; python_version==3.11 and sys_platform==linux
