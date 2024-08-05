@@ -37,6 +37,10 @@ jobs:
         python -m pip install flake8 pytest
         python -m pip install dummy_package_manager
         python -m pip install pipdeptree
+    - name: Install dependencies (Python 3.13)
+      if: "startsWith(matrix.python-version, '3.13')"
+      run: |
+            pip install https://github.com/python-cffi/cffi/archive/refs/heads/main.zip
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
