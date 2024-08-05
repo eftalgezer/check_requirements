@@ -40,8 +40,6 @@ jobs:
     - name: See requirements
       run: |
             check_requirements -l -wi python_version sys_platform
-            pwd
-            ls
     - name: Check missing requirements
       if: always()
       run: |
