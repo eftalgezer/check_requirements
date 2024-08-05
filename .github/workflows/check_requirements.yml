@@ -45,8 +45,8 @@ jobs:
     - name: Check missing requirements
       if: always()
       run: |
-            check_requirements -cm requirements.txt -rme -ip "check-requirements"
+            check_requirements -cm -f requirements.txt -rme -ip "check-requirements"
     - name: Check extra requirements
       if: always()
       run: |
-            check_requirements -ce requirements.txt -ree -ip "check-requirements"
+            check_requirements -ce -f requirements.txt -ree -ip "check-requirements"
